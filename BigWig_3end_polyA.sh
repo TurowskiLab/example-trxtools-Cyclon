@@ -1,7 +1,7 @@
 #!/bin/bash
-#SBATCH --job-name=BigWig_3end_Rpo21
-#SBATCH --output=BigWig_3end_Rpo21%j.out
-#SBATCH --error=BigWig_3end_Rpo21%j.err
+#SBATCH --job-name=BigWig_3end
+#SBATCH --output=BigWig_3end%j.out
+#SBATCH --error=BigWig_3end%j.err
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=256GB

@@ -1,7 +1,7 @@
 #!/bin/bash
-#SBATCH --job-name=BigWig_3end
-#SBATCH --output=BigWig_3end%j.out
-#SBATCH --error=BigWig_3end%j.err
+#SBATCH --job-name=polyAfraction
+#SBATCH --output=polyAfraction%j.out
+#SBATCH --error=polyAfraction%j.err
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=256GB
@@ -19,8 +19,8 @@ source activate processing
 cd $PWD/04_BigWig
 
 # Loop through each SAM file and run SAM2profilesGenomic.py
-for f in *sam; do
-    SAM2profilesGenomic.py -f $f -u 5end &
+for f in *polyA_fwd.bw; do
+    polyAfraction.py -f $f &
 done
 
 # Wait for all background jobs to finish
