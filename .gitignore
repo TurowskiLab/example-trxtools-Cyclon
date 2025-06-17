@@ -4,7 +4,7 @@
 01_preprocessing/
 02_alignment/
 02b_alignment_all/
-03_FetaureCounts/
+#03_FetaureCounts/
 04_BigWig/*.sam
 cleaninig.done
 .snakemake/

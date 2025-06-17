@@ -1,0 +1,15 @@
+Status	02_alignment/AG241010_none_none_120mJ_1.bam	02_alignment/AG241010_Cyclon_none_120mJ_1.bam	02_alignment/AG241010_none_none_120mJ_2.bam	02_alignment/AG241010_Cyclon_none_120mJ_2.bam
+Assigned	1302	566097	11364	654070
+Unassigned_Unmapped	0	0	0	0
+Unassigned_Read_Type	0	0	0	0
+Unassigned_Singleton	0	0	0	0
+Unassigned_MappingQuality	0	0	0	0
+Unassigned_Chimera	0	0	0	0
+Unassigned_FragmentLength	0	0	0	0
+Unassigned_Duplicate	0	0	0	0
+Unassigned_MultiMapping	0	0	0	0
+Unassigned_Secondary	0	0	0	0
+Unassigned_NonSplit	0	0	0	0
+Unassigned_NoFeatures	1902	2855645	27795	1113430
+Unassigned_Overlapping_Length	0	0	0	0
+Unassigned_Ambiguity	0	0	0	0
