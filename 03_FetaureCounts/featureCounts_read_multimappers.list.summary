@@ -1,0 +1,15 @@
+Status	02_alignment/AG241010_none_none_120mJ_1_read.bam	02_alignment/AG241010_Cyclon_none_120mJ_1_read.bam	02_alignment/AG241010_none_none_120mJ_2_read.bam	02_alignment/AG241010_Cyclon_none_120mJ_2_read.bam	02_alignment/AG241010_Cyclon-CT_none_120mJ_2_read.bam	02_alignment/AG241010_Cyclon-CT_none_120mJ_1_read.bam	02_alignment/AG241010_Cyclon-NT_none_120mJ_1_read.bam	02_alignment/AG241010_Cyclon-NT_none_120mJ_2_read.bam
+Assigned	956	555729	11059	638787	1598246	237927	203807	1054407
+Unassigned_Unmapped	0	0	0	0	0	0	0	0
+Unassigned_Read_Type	0	0	0	0	0	0	0	0
+Unassigned_Singleton	0	0	0	0	0	0	0	0
+Unassigned_MappingQuality	0	0	0	0	0	0	0	0
+Unassigned_Chimera	0	0	0	0	0	0	0	0
+Unassigned_FragmentLength	0	0	0	0	0	0	0	0
+Unassigned_Duplicate	0	0	0	0	0	0	0	0
+Unassigned_MultiMapping	0	0	0	0	0	0	0	0
+Unassigned_Secondary	0	0	0	0	0	0	0	0
+Unassigned_NonSplit	0	0	0	0	0	0	0	0
+Unassigned_NoFeatures	4115	2840014	32128	1121975	1503043	334204	765361	1303480
+Unassigned_Overlapping_Length	0	0	0	0	0	0	0	0
+Unassigned_Ambiguity	0	0	0	0	0	0	0	0

@@ -52,17 +52,17 @@ rule all:
 	input:
 		expand("01_preprocessing/01d_{sample}_flexbar.fasta.gz",sample=SAMPLES),
 		expand("01_preprocessing/01e_{sample}_3end.fasta.gz",sample=SAMPLES),
-		expand("02_alignment/{sample}.bam",sample=SAMPLES),
-		expand("02_alignment/{sample}.bam.bai",sample=SAMPLES),
-		expand("02b_alignment_3end/{sample}_all.bam",sample=SAMPLES),
-		expand("02b_alignment_3end/{sample}_all.bam.bai",sample=SAMPLES),
-		"03_FetaureCounts/featureCounts_multimappers.list",
-		"03_FetaureCounts/featureCounts_uniq.list",
-		expand("04_BigWig/{sample}_raw_plus.bw",sample=SAMPLES),
-		expand("04_BigWig/{sample}_raw_minus.bw",sample=SAMPLES),
-		expand("04_BigWig/{sample}_CPM_plus.bw",sample=SAMPLES),
-		expand("04_BigWig/{sample}_CPM_minus.bw",sample=SAMPLES),
-		expand("04_BigWig/{sample}.sam",sample=SAMPLES),
+		expand("02_alignment/{sample}_read.bam",sample=SAMPLES),
+		expand("02_alignment/{sample}_read.bam.bai",sample=SAMPLES),
+		# expand("02b_alignment_3end/{sample}_3end.bam",sample=SAMPLES),
+		# expand("02b_alignment_3end/{sample}_3end.bam.bai",sample=SAMPLES),
+		"03_FetaureCounts/featureCounts_read_multimappers.list",
+		"03_FetaureCounts/featureCounts_read_uniq.list",
+		expand("04_BigWig/{sample}_read_plus.bw",sample=SAMPLES),
+		expand("04_BigWig/{sample}_read_minus.bw",sample=SAMPLES),
+		expand("04_BigWig/{sample}_read_CPM_plus.bw",sample=SAMPLES),
+		expand("04_BigWig/{sample}_read_CPM_minus.bw",sample=SAMPLES),
+		expand("04_BigWig/{sample}_read.sam",sample=SAMPLES),
 		# expand("04_BigWig/{sample}_PROFILE_5end_fwd.bw",sample=SAMPLES),
 		# expand("04_BigWig/{sample}_PROFILE_5end_rev.bw",sample=SAMPLES),
 		# expand("04_BigWig/{sample}_PROFILE_3end_fwd.bw",sample=SAMPLES),
@@ -155,16 +155,16 @@ rule length_filtering:
 
 rule align:
 	input:
-		reads_all = "01_preprocessing/01d_{sample}_flexbar.fasta.gz",
+		reads = "01_preprocessing/01d_{sample}_flexbar.fasta.gz",
 	params:
 		index_dir = STAR_INDEX,
-		prefix_all = "02_alignment/{sample}_all_STAR_"
+		prefix = "02_alignment/{sample}_read_STAR_"
 	output:
-		bam_all = "02_alignment/{sample}_all_STAR_Aligned.out.bam"
+		bam = "02_alignment/{sample}_read_STAR_Aligned.out.bam"
 	conda:
 		"envs/processing.yml"
 	shell:
-		"STAR --outFileNamePrefix {params.prefix_all} --readFilesCommand zcat --genomeDir {params.index_dir} --genomeLoad LoadAndRemove --outSAMtype BAM Unsorted --readFilesIn {input.reads_all}"
+		"STAR --outFileNamePrefix {params.prefix} --readFilesCommand zcat --genomeDir {params.index_dir} --genomeLoad LoadAndRemove --outSAMtype BAM Unsorted --readFilesIn {input.reads}"
 
 # rule align_3end:
 # 	input:
@@ -183,10 +183,10 @@ rule align:
 
 rule sort:
 	input:
-		bam = "02_alignment/{sample}_STAR_Aligned.out.bam"
+		bam = "02_alignment/{sample}_read_STAR_Aligned.out.bam"
 	output:
-		bam = "02_alignment/{sample}.bam",
-		bai = "02_alignment/{sample}.bam.bai"
+		bam = "02_alignment/{sample}_read.bam",
+		bai = "02_alignment/{sample}_read.bam.bai"
 	conda:
 		"envs/processing.yml"
 	shell:
@@ -199,8 +199,8 @@ rule sort:
 # 	input:
 # 		bam = "02b_alignment_3end/{sample}_STAR_Aligned.out.bam"
 # 	output:
-# 		bam = "02b_alignment_3end/{sample}.bam",
-# 		bai = "02b_alignment_3end/{sample}.bam.bai"
+# 		bam = "02b_alignment_3end/{sample}_3end.bam",
+# 		bai = "02b_alignment_3end/{sample}_3end.bam.bai"
 # 	conda:
 # 		"envs/processing.yml"
 # 	shell:
@@ -211,10 +211,10 @@ rule sort:
 
 rule featureCounts:
 	input:
-		bam = expand("02_alignment/{sample}.bam",sample=SAMPLES) #use list of files
+		bam = expand("02_alignment/{sample}_read.bam",sample=SAMPLES) #use list of files
 	output:
-		multi = "03_FetaureCounts/featureCounts_multimappers.list",
-		uniq = "03_FetaureCounts/featureCounts_uniq.list"
+		multi = "03_FetaureCounts/featureCounts_read_multimappers.list",
+		uniq = "03_FetaureCounts/featureCounts_read_uniq.list"
 	params:
 		gtf=GTF
 	conda:
@@ -229,11 +229,11 @@ rule featureCounts:
 
 rule BigWigs_CPM:
 	input:
-		bam = "02_alignment/{sample}.bam",
-		bai = "02_alignment/{sample}.bam.bai"
+		bam = "02_alignment/{sample}_read.bam",
+		bai = "02_alignment/{sample}_read.bam.bai"
 	output:
-		bwP = "04_BigWig/{sample}_CPM_plus.bw",
-		bwM = "04_BigWig/{sample}_CPM_minus.bw"
+		bwP = "04_BigWig/{sample}_read_CPM_plus.bw",
+		bwM = "04_BigWig/{sample}_read_CPM_minus.bw"
 	conda:
 		"envs/processing.yml"
 	shell:
@@ -244,8 +244,8 @@ rule BigWigs_CPM:
 
 rule BigWigs_read:
 	input:
-		bam = "02_alignment/{sample}.bam",
-		bai = "02_alignment/{sample}.bam.bai"
+		bam = "02_alignment/{sample}_read.bam",
+		bai = "02_alignment/{sample}_read.bam.bai"
 	output:
 		bwP = "04_BigWig/{sample}_read_plus.bw",
 		bwM = "04_BigWig/{sample}_read_minus.bw"
@@ -259,10 +259,10 @@ rule BigWigs_read:
 
 rule bam2sam:
 	input:
-		bam = "02_alignment/{sample}.bam",
-		bai = "02_alignment/{sample}.bam.bai"
+		bam = "02_alignment/{sample}_read.bam",
+		bai = "02_alignment/{sample}_read.bam.bai"
 	output:
-		sam = "04_BigWig/{sample}.sam"
+		sam = "04_BigWig/{sample}_read.sam"
 	conda:
 		"envs/processing.yml"
 	shell:

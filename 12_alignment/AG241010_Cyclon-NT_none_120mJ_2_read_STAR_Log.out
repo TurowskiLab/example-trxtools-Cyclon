@@ -1,0 +1,111 @@
+STAR version=2.7.10a
+STAR compilation time,server,dir=2022-01-14T18:50:00-05:00 :/home/dobin/data/STAR/STARcode/STAR.master/source
+STAR git: On branch master ; commit ae26add7ea1724f3281ec8abedb71bcff6a4ae73 ; diff files: CHANGES.md README.md RELEASEnotes.md doc/STARmanual.pdf extras/doc-latex/STARmanual.tex extras/doc-latex/convertParDefToLatexTable.awk extras/doc-latex/parametersDefault.tex extras/docker/Dockerfile source/VERSION 
+##### Command Line:
+STAR --outFileNamePrefix 12_alignment/AG241010_Cyclon-NT_none_120mJ_2_read_STAR_ --readFilesCommand zcat --genomeDir /home/tomasz.turowski/seq_references/hg41/hg41_STAR_index/ --genomeLoad LoadAndRemove --outSAMtype BAM Unsorted --readFilesIn 01_preprocessing/11c_AG241010_Cyclon-NT_none_120mJ_2_collapsed.fasta.gz
+##### Initial USER parameters from Command Line:
+outFileNamePrefix                 12_alignment/AG241010_Cyclon-NT_none_120mJ_2_read_STAR_
+###### All USER parameters from Command Line:
+outFileNamePrefix             12_alignment/AG241010_Cyclon-NT_none_120mJ_2_read_STAR_     ~RE-DEFINED
+readFilesCommand              zcat        ~RE-DEFINED
+genomeDir                     /home/tomasz.turowski/seq_references/hg41/hg41_STAR_index/     ~RE-DEFINED
+genomeLoad                    LoadAndRemove     ~RE-DEFINED
+outSAMtype                    BAM   Unsorted        ~RE-DEFINED
+readFilesIn                   01_preprocessing/11c_AG241010_Cyclon-NT_none_120mJ_2_collapsed.fasta.gz        ~RE-DEFINED
+##### Finished reading parameters from all sources
+
+##### Final user re-defined parameters-----------------:
+genomeDir                         /home/tomasz.turowski/seq_references/hg41/hg41_STAR_index/
+genomeLoad                        LoadAndRemove
+readFilesIn                       01_preprocessing/11c_AG241010_Cyclon-NT_none_120mJ_2_collapsed.fasta.gz   
+readFilesCommand                  zcat   
+outFileNamePrefix                 12_alignment/AG241010_Cyclon-NT_none_120mJ_2_read_STAR_
+outSAMtype                        BAM   Unsorted   
+
+-------------------------------
+##### Final effective command line:
+STAR   --genomeDir /home/tomasz.turowski/seq_references/hg41/hg41_STAR_index/   --genomeLoad LoadAndRemove   --readFilesIn 01_preprocessing/11c_AG241010_Cyclon-NT_none_120mJ_2_collapsed.fasta.gz      --readFilesCommand zcat      --outFileNamePrefix 12_alignment/AG241010_Cyclon-NT_none_120mJ_2_read_STAR_   --outSAMtype BAM   Unsorted   
+----------------------------------------
+
+Number of fastq files for each mate = 1
+
+   Input read files for mate 1 :
+-rw-r--r-- 1 tomasz.turowski users 12171894 Aug  4 00:24 01_preprocessing/11c_AG241010_Cyclon-NT_none_120mJ_2_collapsed.fasta.gz
+
+   readsCommandsFile:
+exec > "12_alignment/AG241010_Cyclon-NT_none_120mJ_2_read_STAR__STARtmp/tmp.fifo.read1"
+echo FILE 0
+zcat      "01_preprocessing/11c_AG241010_Cyclon-NT_none_120mJ_2_collapsed.fasta.gz"
+
+ParametersSolo: --soloCellFilterType CellRanger2.2 filtering parameters:  3000 0.99 10
+Finished loading and checking parameters
+Reading genome generation parameters:
+### STAR   --runMode genomeGenerate      --runThreadN 30   --genomeDir hg41_STAR_index/   --genomeFastaFiles GRCh38.primary_assembly.genome.cleaned.fa      --limitGenomeGenerateRAM 33524399488   --sjdbGTFfile gencode.v41.annotation.gtf
+### GstrandBit=32
+versionGenome                 2.7.4a     ~RE-DEFINED
+genomeType                    Full     ~RE-DEFINED
+genomeFastaFiles              GRCh38.primary_assembly.genome.cleaned.fa        ~RE-DEFINED
+genomeSAindexNbases           14     ~RE-DEFINED
+genomeChrBinNbits             18     ~RE-DEFINED
+genomeSAsparseD               1     ~RE-DEFINED
+genomeTransformType           None     ~RE-DEFINED
+genomeTransformVCF            -     ~RE-DEFINED
+sjdbOverhang                  100     ~RE-DEFINED
+sjdbFileChrStartEnd           -        ~RE-DEFINED
+sjdbGTFfile                   gencode.v41.annotation.gtf     ~RE-DEFINED
+sjdbGTFchrPrefix              -     ~RE-DEFINED
+sjdbGTFfeatureExon            exon     ~RE-DEFINED
+sjdbGTFtagExonParentTranscripttranscript_id     ~RE-DEFINED
+sjdbGTFtagExonParentGene      gene_id     ~RE-DEFINED
+sjdbInsertSave                Basic     ~RE-DEFINED
+genomeFileSizes               3172042881   24897126222        ~RE-DEFINED
+Genome version is compatible with current STAR
+Number of real (reference) chromosomes= 25
+1	chr1	248956422	0
+2	chr2	242193529	249036800
+3	chr3	198295559	491257856
+4	chr4	190214555	689700864
+5	chr5	181538259	880017408
+6	chr6	170805979	1061683200
+7	chr7	159345973	1232601088
+8	chr8	145138636	1391984640
+9	chr9	138394717	1537212416
+10	chr10	133797422	1675624448
+11	chr11	135086622	1809580032
+12	chr12	133275309	1944846336
+13	chr13	114364328	2078277632
+14	chr14	107043718	2192834560
+15	chr15	101991189	2300051456
+16	chr16	90338345	2402287616
+17	chr17	83257441	2492727296
+18	chr18	80373285	2576089088
+19	chr19	58617616	2656567296
+20	chr20	64444167	2715287552
+21	chr21	46709983	2779774976
+22	chr22	50818468	2826698752
+23	chrX	156040895	2877554688
+24	chrY	57227415	3033792512
+25	chrM	16569	3091202048
+--sjdbOverhang = 100 taken from the generated genome
+Started loading the genome: Mon Aug  4 00:24:47 2025
+
+Genome: size given as a parameter = 3172042881
+SA: size given as a parameter = 24897126222
+SAindex: size given as a parameter = 1
+Read from SAindex: pGe.gSAindexNbases=14  nSAi=357913940
+nGenome=3172042881;  nSAbyte=24897126222
+GstrandBit=32   SA number of indices=6035666962
+Allocating shared memory for genome
+Genome file size: 3172042881 bytes; state: good=1 eof=0 fail=0 bad=0
+Loading Genome ... done! state: good=1 eof=0 fail=0 bad=0; loaded 3172042881 bytes
+SA file size: 24897126222 bytes; state: good=1 eof=0 fail=0 bad=0
+Loading SA ... done! state: good=1 eof=0 fail=0 bad=0; loaded 24897126222 bytes
+Loading SAindex ... done: 1565873619 bytes
+Finished loading the genome: Mon Aug  4 00:26:59 2025
+
+Processing splice junctions database sjdbN=400889,   pGe.sjdbOverhang=100 
+alignIntronMax=alignMatesGapMax=0, the max intron size will be approximately determined by (2^winBinNbits)*winAnchorDistNbins=589824
+Starting to map file # 0
+mate 1:   01_preprocessing/11c_AG241010_Cyclon-NT_none_120mJ_2_collapsed.fasta.gz
+Completed: thread #0
+ALL DONE!
