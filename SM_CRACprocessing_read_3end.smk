@@ -73,14 +73,14 @@ rule all: #TODO eventually produce all files, esp. BWs
 		"03a_FeatureCounts_umitools/featureCounts_umitools_uniq_TPM.txt",
 		# "03_FetaureCounts/featureCounts_exons_multimappers.list",
 		# "03_FetaureCounts/featureCounts_exons_uniq.list",
-		expand("04_BigWig/{sample}_all_dedup_raw_plus.bw",sample=SAMPLES),
-		expand("04_BigWig/{sample}_all_dedup_raw_minus.bw",sample=SAMPLES),
-		expand("04_BigWig/{sample}_all_dedup_CPM_plus.bw",sample=SAMPLES),
-		expand("04_BigWig/{sample}_all_dedup_CPM_minus.bw",sample=SAMPLES),
-		expand("04a_BigWig_umitools/{sample}_all_umitools_raw_plus.bw",sample=SAMPLES),
-		expand("04a_BigWig_umitools/{sample}_all_umitools_raw_minus.bw",sample=SAMPLES),
-		expand("04a_BigWig_umitools/{sample}_all_umitools_CPM_plus.bw",sample=SAMPLES),
-		expand("04a_BigWig_umitools/{sample}_all_umitools_CPM_minus.bw",sample=SAMPLES),
+		expand("04_BigWig/{sample}_all_dedup_reads_plus.bw",sample=SAMPLES),
+		expand("04_BigWig/{sample}_all_dedup_reads_rev.bw",sample=SAMPLES),
+		expand("04_BigWig/{sample}_all_dedup_CPM_fwd.bw",sample=SAMPLES),
+		expand("04_BigWig/{sample}_all_dedup_CPM_rev.bw",sample=SAMPLES),
+		expand("04a_BigWig_umitools/{sample}_all_umitools_reads_fwd.bw",sample=SAMPLES),
+		expand("04a_BigWig_umitools/{sample}_all_umitools_reads_rev.bw",sample=SAMPLES),
+		expand("04a_BigWig_umitools/{sample}_all_umitools_CPM_fwd.bw",sample=SAMPLES),
+		expand("04a_BigWig_umitools/{sample}_all_umitools_CPM_rev.bw",sample=SAMPLES),
 		# expand("04_BigWig/{sample}.sam",sample=SAMPLES),
 		# expand("04_BigWig/{sample}_PROFILE_5end_fwd.bw",sample=SAMPLES),
 		# expand("04_BigWig/{sample}_PROFILE_5end_rev.bw",sample=SAMPLES),
@@ -385,8 +385,8 @@ rule BigWigs_CPM:
 		bam = "02b_alignment_all/{sample}_all.bam",
 		bai = "02b_alignment_all/{sample}_all.bam.bai"
 	output:
-		bwP = "04_BigWig/{sample}_all_dedup_CPM_plus.bw",
-		bwM = "04_BigWig/{sample}_all_dedup_CPM_minus.bw"
+		bwP = "04_BigWig/{sample}_all_dedup_CPM_fwd.bw",
+		bwM = "04_BigWig/{sample}_all_dedup_CPM_rev.bw"
 	conda:
 		"envs/processing.yml"
 	shell:
@@ -400,8 +400,8 @@ rule BigWigs_raw:
 		bam = "02b_alignment_all/{sample}_all.bam",
 		bai = "02b_alignment_all/{sample}_all.bam.bai"
 	output:
-		bwP = "04_BigWig/{sample}_all_dedup_raw_plus.bw",
-		bwM = "04_BigWig/{sample}_all_dedup_raw_minus.bw"
+		bwP = "04_BigWig/{sample}_all_dedup_reads_plus.bw",
+		bwM = "04_BigWig/{sample}_all_dedup_reads_rev.bw"
 	conda:
 		"envs/processing.yml"
 	shell:
@@ -415,8 +415,8 @@ rule BigWigs_umitools_CPM:
 		bam = "02c_alignment_all_umitools/{sample}_all_dedup.bam",
 		bai = "02c_alignment_all_umitools/{sample}_all_dedup.bam.bai"
 	output:
-		bwP = "04a_BigWig_umitools/{sample}_all_umitools_CPM_plus.bw",
-		bwM = "04a_BigWig_umitools/{sample}_all_umitools_CPM_minus.bw"
+		bwP = "04a_BigWig_umitools/{sample}_all_umitools_CPM_fwd.bw",
+		bwM = "04a_BigWig_umitools/{sample}_all_umitools_CPM_rev.bw"
 	conda:
 		"envs/processing.yml"
 	shell:
@@ -430,8 +430,8 @@ rule BigWigs_umitools_raw:
 		bam = "02c_alignment_all_umitools/{sample}_all_dedup.bam",
 		bai = "02c_alignment_all_umitools/{sample}_all_dedup.bam.bai"
 	output:
-		bwP = "04a_BigWig_umitools/{sample}_all_umitools_raw_plus.bw",
-		bwM = "04a_BigWig_umitools/{sample}_all_umitools_raw_minus.bw"
+		bwP = "04a_BigWig_umitools/{sample}_all_umitools_reads_fwd.bw",
+		bwM = "04a_BigWig_umitools/{sample}_all_umitools_reads_rev.bw"
 	conda:
 		"envs/processing.yml"
 	shell:
