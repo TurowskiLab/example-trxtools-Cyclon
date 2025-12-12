@@ -43,6 +43,17 @@ snakemake  -c64 --use-conda -s SM_CRACprocessing_read_3end.smk --slurm -j12
 After the run finishes continue to the analysis steps below. If you're performing the analysis stage on a different machine (e.g. a desktop after running the pipeline on a cluster), copy the whole repository folder there, including the output files produced.
 
 # Analysis using Jupyter notebooks
-To run the analysis notebooks, [Jupyter](https://jupyter.org/install) is required.
 
-TODO: We might need to package and provide a jupyter env, then probably use that instead of a fresh install.
+## Create and activate jupyter environment
+```
+conda env create -f envs/jupyter.yml
+conda activate jupyter
+```
+
+
+## Open Jupyter Lab and run notebooks
+```
+jupyter lab .
+```
+
+Afterwards open the subsequent notebooks in Jupyter and run them to perform the analysis.
