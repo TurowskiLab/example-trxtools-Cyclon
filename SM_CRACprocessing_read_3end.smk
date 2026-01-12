@@ -11,6 +11,7 @@ name_elem = '.fastq.gz'  #write file ending here
 #references
 STAR_INDEX = "/home/tomasz.turowski/seq_references/hg41/hg41_STAR_index/"
 GTF = "/home/tomasz.turowski/seq_references/hg41/hg41_annotation_gencode_tRNA_rRNA.gtf"
+GTF_EXONS = "/home/jmikolajczyk/03_CRAC/02_Nic_Cyclon_CRAC/references/hg41_annotation_gencode_tRNA_rRNA_exons_genes_only.gtf"
 
 #parsing file names and preparatory jobs
 longName = [n.strip(name_elem) for n in os.listdir(path) if n.endswith(name_elem)]
@@ -25,12 +26,13 @@ def parseBarcode(bc):
 
 def readLengths(n):
 	f = path+n+name_elem
-	command = "zcat "+f+" | head -40 | fastqReadsLength.awk | cut -f1"
+	command = "zcat "+f+" | head -40 | scripts/fastqReadsLength.awk | cut -f1"
 	return int(subprocess.run([command],shell=True, stdout=subprocess.PIPE).stdout.decode('utf-8'))
 
 df_names = pd.DataFrame({
 	'adaptor' : adaptors,
 	'barcode' : barcodes,
+	'barcode_pattern': [re.sub(r'([ATCG])', 'X', bc) for bc in barcodes],
 	'bcLen'	  : [len(bc)+1 for bc in barcodes], #+1 for fastx_trimmer
 	'longName' : longName,
 	'readLength': [readLengths(n) for n in longName],
@@ -43,26 +45,43 @@ d1_name = df_names['longName'].to_dict()
 d2_bcLen = df_names['bcLen'].to_dict()
 d3_as = df_names['adaptor'].to_dict()
 d4_readLen = df_names['readLength'].to_dict()
+d5_bcPattern = df_names['barcode_pattern'].to_dict()
 
 #SnakeMake pipeline
 
 ########## OUTPUTS ##########
 
-rule all:
+rule all: #TODO eventually produce all files, esp. BWs
 	input:
-		expand("01_preprocessing/01d_{sample}_flexbar.fasta.gz",sample=SAMPLES),
-		expand("01_preprocessing/01e_{sample}_3end.fasta.gz",sample=SAMPLES),
-		expand("02_alignment/{sample}_read.bam",sample=SAMPLES),
-		expand("02_alignment/{sample}_read.bam.bai",sample=SAMPLES),
-		# expand("02b_alignment_3end/{sample}_3end.bam",sample=SAMPLES),
-		# expand("02b_alignment_3end/{sample}_3end.bam.bai",sample=SAMPLES),
-		"03_FetaureCounts/featureCounts_read_multimappers.list",
-		"03_FetaureCounts/featureCounts_read_uniq.list",
-		expand("04_BigWig/{sample}_read_plus.bw",sample=SAMPLES),
-		expand("04_BigWig/{sample}_read_minus.bw",sample=SAMPLES),
-		expand("04_BigWig/{sample}_read_CPM_plus.bw",sample=SAMPLES),
-		expand("04_BigWig/{sample}_read_CPM_minus.bw",sample=SAMPLES),
-		expand("04_BigWig/{sample}_read.sam",sample=SAMPLES),
+		expand("01a_preprocessing_umitools/01a_{sample}_noumi.fastq.gz", sample=SAMPLES),
+		expand("01_preprocessing/01d_{sample}_flexbar.fastq.gz",sample=SAMPLES),
+		# expand("01_preprocessing/01d_{sample}_cutadapt.fastq.gz",sample=SAMPLES),
+		# expand("01_preprocessing/01e_{sample}_3end.fasta.gz", sample=SAMPLES),
+		# expand("02_alignment/{sample}.bam",sample=SAMPLES),
+		# expand("02_alignment/{sample}.bam.bai",sample=SAMPLES),
+		expand("02b_alignment_all/{sample}_all.bam", sample=SAMPLES),
+		expand("02b_alignment_all/{sample}_all.bam.bai", sample=SAMPLES),
+		expand("02c_alignment_all_umitools/{sample}_all_dedup.bam", sample=SAMPLES),
+		expand("02c_alignment_all_umitools/{sample}_all_dedup.bam.bai", sample=SAMPLES),
+		"03_FeatureCounts/featureCounts_multimappers.list",
+		"03_FeatureCounts/featureCounts_uniq.list",
+		"03_FeatureCounts/featureCounts_multimappers_TPM.txt",
+		"03_FeatureCounts/featureCounts_uniq_TPM.txt",
+		"03a_FeatureCounts_umitools/featureCounts_umitools_multimappers.list",
+		"03a_FeatureCounts_umitools/featureCounts_umitools_uniq.list",
+		"03a_FeatureCounts_umitools/featureCounts_umitools_multimappers_TPM.txt",
+		"03a_FeatureCounts_umitools/featureCounts_umitools_uniq_TPM.txt",
+		# "03_FetaureCounts/featureCounts_exons_multimappers.list",
+		# "03_FetaureCounts/featureCounts_exons_uniq.list",
+		expand("04_BigWig/{sample}_all_dedup_reads_plus.bw",sample=SAMPLES),
+		expand("04_BigWig/{sample}_all_dedup_reads_rev.bw",sample=SAMPLES),
+		expand("04_BigWig/{sample}_all_dedup_CPM_fwd.bw",sample=SAMPLES),
+		expand("04_BigWig/{sample}_all_dedup_CPM_rev.bw",sample=SAMPLES),
+		expand("04a_BigWig_umitools/{sample}_all_umitools_reads_fwd.bw",sample=SAMPLES),
+		expand("04a_BigWig_umitools/{sample}_all_umitools_reads_rev.bw",sample=SAMPLES),
+		expand("04a_BigWig_umitools/{sample}_all_umitools_CPM_fwd.bw",sample=SAMPLES),
+		expand("04a_BigWig_umitools/{sample}_all_umitools_CPM_rev.bw",sample=SAMPLES),
+		# expand("04_BigWig/{sample}.sam",sample=SAMPLES),
 		# expand("04_BigWig/{sample}_PROFILE_5end_fwd.bw",sample=SAMPLES),
 		# expand("04_BigWig/{sample}_PROFILE_5end_rev.bw",sample=SAMPLES),
 		# expand("04_BigWig/{sample}_PROFILE_3end_fwd.bw",sample=SAMPLES),
@@ -77,6 +96,10 @@ def bcFile(wildcards):
 	sample_name = wildcards.sample
 	return path+d1_name[sample_name]+name_elem
 
+def bcPattern(wildcards):
+	sample_name = wildcards.sample
+	return d5_bcPattern[sample_name]
+
 # rule QC:
 # 	input:
 # 		bcFile
@@ -89,16 +112,17 @@ def bcFile(wildcards):
 # 	shell:
 # 		"flexbar -r {input} -t {params} -q TAIL -n 4 -qf i1.8 -qt 20 -z GZ"
 
-rule collapsing:
+rule umitools_extract:
 	input:
-		# "01_preprocessing/01a_{sample}_QC.fastq.gz"
 		bcFile
+	params:
+		bc = bcPattern
 	output:
-		"01_preprocessing/01b_{sample}_comp.fasta.gz"
+		"01a_preprocessing_umitools/01a_{sample}_noumi.fastq.gz"
 	conda:
-		"envs/processing.yml"
+		"envs/umitools_fix.yml" #hotfix from commit d380e8d as per issue #688
 	shell:
-		"gunzip -c {input} | fastx_collapser | gzip > {output}"
+		"umi_tools extract --stdin={input} --stdout={output} --bc-pattern={params.bc}"
 
 #functions for debarcoding
 def bcLen(wildcards):
@@ -107,15 +131,30 @@ def bcLen(wildcards):
 
 rule debarcoding:
 	input:
-		"01_preprocessing/01b_{sample}_comp.fasta.gz"
+		bcFile
 	params:
 		bcLen = bcLen
 	output:
-		"01_preprocessing/01c_{sample}_deBC.fasta.gz"
+		"01_preprocessing/01c_{sample}_deBC.fastq.gz"
 	conda:
 		"envs/processing.yml"
 	shell:
 		"gunzip -c {input} | fastx_trimmer -f {params.bcLen} | gzip > {output}"
+		# "gunzip -c {input} | tr -d '\r' | fastx_trimmer -f {params.bcLen} | gzip > {output}"
+
+rule debarcoding_umitools:
+	input:
+		"01a_preprocessing_umitools/01a_{sample}_noumi.fastq.gz" #changed from 01b to 01a
+		# bcFile
+	params:
+		bcLen = bcLen
+	output:
+		"01a_preprocessing_umitools/01c_{sample}_deBC_umitools.fastq.gz"
+	conda:
+		"envs/processing.yml"
+	shell:
+		"gunzip -c {input} | fastx_trimmer -f {params.bcLen} | gzip > {output}"
+		# "gunzip -c {input} | tr -d '\r' | fastx_trimmer -f {params.bcLen} | gzip > {output}"
 
 #functions for adaptor sequence
 def adSeq(wildcards):
@@ -124,12 +163,25 @@ def adSeq(wildcards):
 
 rule flexbar_3end_trimming:
 	input:
-		"01_preprocessing/01c_{sample}_deBC.fasta.gz"
+		"01_preprocessing/01c_{sample}_deBC.fastq.gz"
 	params:
 		adSeq = adSeq,
 		n = "01_preprocessing/01d_{sample}_flexbar"
 	output:
-		"01_preprocessing/01d_{sample}_flexbar.fasta.gz"
+		"01_preprocessing/01d_{sample}_flexbar.fastq.gz"
+	conda:
+		"envs/flexbar.yml" 
+	shell:
+		"flexbar -r {input} -t {params.n} -as {params.adSeq} -ao 4 -u 3 -m 7 -n 4 -bt RIGHT -z GZ"
+
+rule flexbar_3end_trimming_umitools:
+	input:
+		"01a_preprocessing_umitools/01c_{sample}_deBC_umitools.fastq.gz"
+	params:
+		adSeq = adSeq,
+		n = "01a_preprocessing_umitools/01d_{sample}_flexbar_umitools"
+	output:
+		"01a_preprocessing_umitools/01d_{sample}_flexbar_umitools.fastq.gz"
 	conda:
 		"envs/flexbar.yml" 
 	shell:
@@ -143,37 +195,60 @@ def maxLen(wildcards):
 
 rule length_filtering:
 	input:
-		"01_preprocessing/01d_{sample}_flexbar.fasta.gz"
+		"01_preprocessing/01d_{sample}_flexbar.fastq.gz"
 	params:
 		maxLen = maxLen
 	output:
-		"01_preprocessing/01e_{sample}_3end.fasta.gz"
+		"01_preprocessing/01e_{sample}_3end.fastq.gz"
+	shell:
+		"zcat {input} | ./scripts/lenFilterFastaMax.awk -v var={params.maxLen} | gzip > {output}"
+
+rule length_filtering_umitools:
+	input:
+		"01a_preprocessing_umitools/01d_{sample}_flexbar_umitools.fastq.gz"
+	params:
+		maxLen = maxLen
+	output:
+		"01a_preprocessing_umitools/01e_{sample}_3end_umitools.fastq.gz"
 	shell:
 		"zcat {input} | ./scripts/lenFilterFastaMax.awk -v var={params.maxLen} | gzip > {output}"
 
 ########## ALIGNMENT ##########
 
-rule align:
+rule align_all:
 	input:
-		reads = "01_preprocessing/01d_{sample}_flexbar.fasta.gz",
+		reads_all = "01_preprocessing/01d_{sample}_flexbar.fastq.gz",
 	params:
 		index_dir = STAR_INDEX,
-		prefix = "02_alignment/{sample}_read_STAR_"
+		prefix_all = "02b_alignment_all/{sample}_all_STAR_"
 	output:
-		bam = "02_alignment/{sample}_read_STAR_Aligned.out.bam"
+		bam_all = "02b_alignment_all/{sample}_all_STAR_Aligned.out.bam"
 	conda:
 		"envs/processing.yml"
 	shell:
-		"STAR --outFileNamePrefix {params.prefix} --readFilesCommand zcat --genomeDir {params.index_dir} --genomeLoad LoadAndRemove --outSAMtype BAM Unsorted --readFilesIn {input.reads}"
+		"STAR --outFileNamePrefix {params.prefix_all} --readFilesCommand zcat --genomeDir {params.index_dir} --genomeLoad LoadAndRemove --outSAMtype BAM Unsorted --readFilesIn {input.reads_all}"
 
-# rule align_3end:
+rule align_all_umitools:
+	input:
+		reads_all = "01a_preprocessing_umitools/01d_{sample}_flexbar_umitools.fastq.gz",
+	params:
+		index_dir = STAR_INDEX,
+		prefix_all = "02c_alignment_all_umitools/{sample}_all_STAR_"
+	output:
+		bam_all = "02c_alignment_all_umitools/{sample}_all_STAR_Aligned.out.bam"
+	conda:
+		"envs/processing.yml"
+	shell:
+		"STAR --outFileNamePrefix {params.prefix_all} --readFilesCommand zcat --genomeDir {params.index_dir} --genomeLoad LoadAndRemove --outSAMtype BAM Unsorted --readFilesIn {input.reads_all}"
+
+# rule align:
 # 	input:
 # 		reads = "01_preprocessing/01e_{sample}_3end.fasta.gz",
 # 	params:
 # 		index_dir = STAR_INDEX,
-# 		prefix = "02b_alignment_3end/{sample}_STAR_"
+# 		prefix = "02_alignment/{sample}_STAR_"
 # 	output:
-# 		bam = "02b_alignment_3end/{sample}_STAR_Aligned.out.bam"
+# 		bam = "02_alignment/{sample}_STAR_Aligned.out.bam"
 # 	conda:
 # 		"envs/processing.yml"
 # 	shell:
@@ -181,40 +256,69 @@ rule align:
 
 ########## POSTPROCESSING ##########
 
-rule sort:
+rule sort_all:
 	input:
-		bam = "02_alignment/{sample}_read_STAR_Aligned.out.bam"
+		bam_all = "02b_alignment_all/{sample}_all_STAR_Aligned.out.bam"
 	output:
-		bam = "02_alignment/{sample}_read.bam",
-		bai = "02_alignment/{sample}_read.bam.bai"
+		bam_all = "02b_alignment_all/{sample}_all.bam",
+		bai_all = "02b_alignment_all/{sample}_all.bam.bai"
 	conda:
 		"envs/processing.yml"
 	shell:
 		"""
-		samtools sort {input.bam} > {output.bam}
-		samtools index {output.bam}
+		samtools sort {input.bam_all} > {output.bam_all}
+		samtools index {output.bam_all}
 		"""
 
-# rule sort_3end:
-# 	input:
-# 		bam = "02b_alignment_3end/{sample}_STAR_Aligned.out.bam"
-# 	output:
-# 		bam = "02b_alignment_3end/{sample}_3end.bam",
-# 		bai = "02b_alignment_3end/{sample}_3end.bam.bai"
-# 	conda:
-# 		"envs/processing.yml"
-# 	shell:
-# 		"""
-# 		samtools sort {input.bam} > {output.bam}
-# 		samtools index {output.bam}
-# 		"""
+rule sort_all_umitools:
+	input:
+		bam_all = "02c_alignment_all_umitools/{sample}_all_STAR_Aligned.out.bam"
+	output:
+		bam_all = "02c_alignment_all_umitools/{sample}_all.bam",
+		bai_all = "02c_alignment_all_umitools/{sample}_all.bam.bai"
+	conda:
+		"envs/processing.yml"
+	shell:
+		"""
+		samtools sort {input.bam_all} > {output.bam_all}
+		samtools index {output.bam_all}
+		"""
+
+rule umitools_dedup_all:
+	input:
+		bam = "02c_alignment_all_umitools/{sample}_all.bam",
+		bai = "02c_alignment_all_umitools/{sample}_all.bam.bai"
+	output:
+		bam = temp("02c_alignment_all_umitools/{sample}_all_dedup_unsorted.bam")
+	conda:
+		"envs/umitools_fix.yml"
+	shell:
+		"""
+		umi_tools dedup -I {input.bam} -S {output.bam}
+		"""
+
+rule sort_dedup:
+	input:
+		bam_all = "02c_alignment_all_umitools/{sample}_all_dedup_unsorted.bam"
+	output:
+		bam_all = "02c_alignment_all_umitools/{sample}_all_dedup.bam",
+		bai_all = "02c_alignment_all_umitools/{sample}_all_dedup.bam.bai"
+	conda:
+		"envs/processing.yml"
+	shell:
+		"""
+		samtools sort {input.bam_all} > {output.bam_all}
+		samtools index {output.bam_all}
+		"""
 
 rule featureCounts:
+	# for files without umitools deduplication
+	# Disabled multioverlap
 	input:
-		bam = expand("02_alignment/{sample}_read.bam",sample=SAMPLES) #use list of files
+		bam = expand("02b_alignment_all/{sample}_all.bam",sample=SAMPLES) #use list of files
 	output:
-		multi = "03_FetaureCounts/featureCounts_read_multimappers.list",
-		uniq = "03_FetaureCounts/featureCounts_read_uniq.list"
+		multi = "03_FeatureCounts/featureCounts_multimappers.list",
+		uniq = "03_FeatureCounts/featureCounts_uniq.list"
 	params:
 		gtf=GTF
 	conda:
@@ -223,17 +327,66 @@ rule featureCounts:
 		# Use -M for multimappers, -s 1 for strandedness, -O for overlapping reads
 		# -a for annotation file, -o for output file
 		"""
-		featureCounts -M -s 1 -O -a {params.gtf} -o {output.multi} {input.bam}
-		featureCounts -s 1 -O -a {params.gtf} -o {output.uniq} {input.bam}
+		featureCounts -t exon -g gene_id -M -s 1 -a {params.gtf} -o {output.multi} {input.bam}
+		featureCounts -t exon -g gene_id -s 1 -a {params.gtf} -o {output.uniq} {input.bam}
+		"""
+
+rule featureCounts2TPM:
+	input:
+		multi = "03_FeatureCounts/featureCounts_multimappers.list",
+		uniq = "03_FeatureCounts/featureCounts_uniq.list"
+	output:
+		tpm_multi = "03_FeatureCounts/featureCounts_multimappers_TPM.txt",
+		tpm_uniq = "03_FeatureCounts/featureCounts_uniq_TPM.txt"
+	conda:
+		"envs/processing.yml"
+	shell:
+		"""
+		python scripts/featureCounts2TPM.py -i {input.multi} -o {output.tpm_multi}
+		python scripts/featureCounts2TPM.py -i {input.uniq} -o {output.tpm_uniq}
+		"""
+
+rule featureCounts_umitools:
+	# Disabled multioverlap
+	input:
+		bam = expand("02c_alignment_all_umitools/{sample}_all_dedup.bam",sample=SAMPLES) #use list of files
+	output:
+		multi = "03a_FeatureCounts_umitools/featureCounts_umitools_multimappers.list",
+		uniq = "03a_FeatureCounts_umitools/featureCounts_umitools_uniq.list"
+	params:
+		gtf=GTF
+	conda:
+		"envs/processing.yml"
+	shell:
+		# Use -M for multimappers, -s 1 for strandedness, -O for overlapping reads
+		# -a for annotation file, -o for output file
+		"""
+		featureCounts -t exon -g gene_id -M -s 1 -a {params.gtf} -o {output.multi} {input.bam}
+		featureCounts -t exon -g gene_id -s 1 -a {params.gtf} -o {output.uniq} {input.bam}
+		"""
+
+rule featureCounts_umitools2TPM:
+	input:
+		multi = "03a_FeatureCounts_umitools/featureCounts_umitools_multimappers.list",
+		uniq = "03a_FeatureCounts_umitools/featureCounts_umitools_uniq.list"
+	output:
+		tpm_multi = "03a_FeatureCounts_umitools/featureCounts_umitools_multimappers_TPM.txt",
+		tpm_uniq = "03a_FeatureCounts_umitools/featureCounts_umitools_uniq_TPM.txt"
+	conda:
+		"envs/processing.yml"
+	shell:
+		"""
+		python scripts/featureCounts2TPM.py -i {input.multi} -o {output.tpm_multi}
+		python scripts/featureCounts2TPM.py -i {input.uniq} -o {output.tpm_uniq}
 		"""
 
 rule BigWigs_CPM:
 	input:
-		bam = "02_alignment/{sample}_read.bam",
-		bai = "02_alignment/{sample}_read.bam.bai"
+		bam = "02b_alignment_all/{sample}_all.bam",
+		bai = "02b_alignment_all/{sample}_all.bam.bai"
 	output:
-		bwP = "04_BigWig/{sample}_read_CPM_plus.bw",
-		bwM = "04_BigWig/{sample}_read_CPM_minus.bw"
+		bwP = "04_BigWig/{sample}_all_dedup_CPM_fwd.bw",
+		bwM = "04_BigWig/{sample}_all_dedup_CPM_rev.bw"
 	conda:
 		"envs/processing.yml"
 	shell:
@@ -242,13 +395,13 @@ rule BigWigs_CPM:
 		bamCoverage --bam {input.bam} -of bigwig -o {output.bwM} --filterRNAstrand forward --normalizeUsing CPM --binSize 1
 		"""
 
-rule BigWigs_read:
+rule BigWigs_raw:
 	input:
-		bam = "02_alignment/{sample}_read.bam",
-		bai = "02_alignment/{sample}_read.bam.bai"
+		bam = "02b_alignment_all/{sample}_all.bam",
+		bai = "02b_alignment_all/{sample}_all.bam.bai"
 	output:
-		bwP = "04_BigWig/{sample}_read_plus.bw",
-		bwM = "04_BigWig/{sample}_read_minus.bw"
+		bwP = "04_BigWig/{sample}_all_dedup_reads_plus.bw",
+		bwM = "04_BigWig/{sample}_all_dedup_reads_rev.bw"
 	conda:
 		"envs/processing.yml"
 	shell:
@@ -257,15 +410,73 @@ rule BigWigs_read:
 		bamCoverage --bam {input.bam} -of bigwig -o {output.bwM} --filterRNAstrand forward --binSize 1
 		"""
 
-rule bam2sam:
+rule BigWigs_umitools_CPM:
 	input:
-		bam = "02_alignment/{sample}_read.bam",
-		bai = "02_alignment/{sample}_read.bam.bai"
+		bam = "02c_alignment_all_umitools/{sample}_all_dedup.bam",
+		bai = "02c_alignment_all_umitools/{sample}_all_dedup.bam.bai"
 	output:
-		sam = "04_BigWig/{sample}_read.sam"
+		bwP = "04a_BigWig_umitools/{sample}_all_umitools_CPM_fwd.bw",
+		bwM = "04a_BigWig_umitools/{sample}_all_umitools_CPM_rev.bw"
 	conda:
 		"envs/processing.yml"
 	shell:
 		"""
-		samtools view -h {input.bam} > {output.sam}
+		bamCoverage --bam {input.bam} -of bigwig -o {output.bwP} --filterRNAstrand reverse --normalizeUsing CPM --binSize 1
+		bamCoverage --bam {input.bam} -of bigwig -o {output.bwM} --filterRNAstrand forward --normalizeUsing CPM --binSize 1
 		"""
+
+rule BigWigs_umitools_raw:
+	input:
+		bam = "02c_alignment_all_umitools/{sample}_all_dedup.bam",
+		bai = "02c_alignment_all_umitools/{sample}_all_dedup.bam.bai"
+	output:
+		bwP = "04a_BigWig_umitools/{sample}_all_umitools_reads_fwd.bw",
+		bwM = "04a_BigWig_umitools/{sample}_all_umitools_reads_rev.bw"
+	conda:
+		"envs/processing.yml"
+	shell:
+		"""
+		bamCoverage --bam {input.bam} -of bigwig -o {output.bwP} --filterRNAstrand reverse --binSize 1
+		bamCoverage --bam {input.bam} -of bigwig -o {output.bwM} --filterRNAstrand forward --binSize 1
+		"""
+
+# rule bam2sam:
+# 	input:
+# 		bam = "02b_alignment_all/{sample}.bam",
+# 		bai = "02b_alignment_allt/{sample}.bam.bai"
+# 	output:
+# 		sam = "04_BigWig/{sample}.sam"
+# 	conda:
+# 		"envs/processing.yml"
+# 	shell:
+# 		"""
+# 		samtools view -h {input.bam} > {output.sam}
+# 		"""
+
+# rule trxtools_5end:
+# 	input:
+# 		"04_BigWig/{sample}.sam"
+# 	output:
+# 		"04_BigWig/{sample}_PROFILE_5end_fwd.bw",
+# 		"04_BigWig/{sample}_PROFILE_5end_rev.bw"
+# 	conda:
+# 		"envs/processing.yml"
+# 	shell:
+# 		"""
+# 		SAM2profilesGenomic.py -u 5end -f {input}
+# 		"""
+
+# rule trxtools_3end:
+# 	input:
+# 		"04_BigWig/{sample}.sam"
+# 	output:
+# 		"04_BigWig/{sample}_PROFILE_3end_fwd.bw",
+# 		"04_BigWig/{sample}_PROFILE_3end_rev.bw",
+# 		"04_BigWig/{sample}_PROFILE_3end_polyA_fwd.bw",
+# 		"04_BigWig/{sample}_PROFILE_3end_polyA_rev.bw"
+# 	conda:
+# 		"envs/processing.yml"
+# 	shell:
+# 		"""
+# 		SAM2profilesGenomic.py -u 3end -n -f {input}
+# 		"""
