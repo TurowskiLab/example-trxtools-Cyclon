@@ -1,0 +1,15 @@
+Status	02b_alignment_all/NR_none_none_400mJ_1_all.bam	02b_alignment_all/AG241010_Cyclon-CT_none_120mJ_2_all.bam	02b_alignment_all/AG241010_Cyclon-NT_none_120mJ_1_all.bam	02b_alignment_all/NR_RPP25L_none_400mJ_1_all.bam	02b_alignment_all/AG241010_Cyclon-NT_none_120mJ_2_all.bam	02b_alignment_all/NR_none_none_400mJ_2_all.bam	02b_alignment_all/AG241010_Cyclon_none_120mJ_2_all.bam	02b_alignment_all/AG241010_Cyclon_none_120mJ_1_all.bam	02b_alignment_all/NR_RPP25L_none_400mJ_2_all.bam	02b_alignment_all/AG241010_none_none_120mJ_2_all.bam	02b_alignment_all/AG241010_Cyclon-CT_none_120mJ_1_all.bam	02b_alignment_all/AG241010_none_none_120mJ_1_all.bam
+Assigned	48	921913	120672	2863	594711	301	342958	431468	2868	3922	134073	505
+Unassigned_Unmapped	0	0	0	0	0	0	0	0	0	0	0	0
+Unassigned_Read_Type	0	0	0	0	0	0	0	0	0	0	0	0
+Unassigned_Singleton	0	0	0	0	0	0	0	0	0	0	0	0
+Unassigned_MappingQuality	0	0	0	0	0	0	0	0	0	0	0	0
+Unassigned_Chimera	0	0	0	0	0	0	0	0	0	0	0	0
+Unassigned_FragmentLength	0	0	0	0	0	0	0	0	0	0	0	0
+Unassigned_Duplicate	0	0	0	0	0	0	0	0	0	0	0	0
+Unassigned_MultiMapping	0	0	0	0	0	0	0	0	0	0	0	0
+Unassigned_Secondary	0	0	0	0	0	0	0	0	0	0	0	0
+Unassigned_NonSplit	0	0	0	0	0	0	0	0	0	0	0	0
+Unassigned_NoFeatures	367	2187074	1303365	29205	2057417	1878	1737458	3395841	2915145	44806	544966	24549
+Unassigned_Overlapping_Length	0	0	0	0	0	0	0	0	0	0	0	0
+Unassigned_Ambiguity	1291	1924656	230434	2355288	1260792	7554	789055	295812	44	14326	278840	1316

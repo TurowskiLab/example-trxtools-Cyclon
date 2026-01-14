@@ -11,7 +11,6 @@ name_elem = '.fastq.gz'  #write file ending here
 #references
 STAR_INDEX = "/home/tomasz.turowski/seq_references/hg41/hg41_STAR_index/"
 GTF = "/home/tomasz.turowski/seq_references/hg41/hg41_annotation_gencode_tRNA_rRNA.gtf"
-GTF_EXONS = "/home/jmikolajczyk/03_CRAC/02_Nic_Cyclon_CRAC/references/hg41_annotation_gencode_tRNA_rRNA_exons_genes_only.gtf"
 
 #parsing file names and preparatory jobs
 longName = [n.strip(name_elem) for n in os.listdir(path) if n.endswith(name_elem)]
