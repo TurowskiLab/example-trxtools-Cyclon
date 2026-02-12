@@ -50,7 +50,9 @@ d5_bcPattern = df_names['barcode_pattern'].to_dict()
 
 ########## OUTPUTS ##########
 
-rule all: #TODO eventually produce all files, esp. BWs
+rule all: 
+	#TODO eventually produce all files, esp. BWs
+	#TODO clean this up after troubleshooting finished
 	input:
 		expand("01a_preprocessing_umitools/01a_{sample}_noumi.fastq.gz", sample=SAMPLES),
 		expand("01_preprocessing/01d_{sample}_flexbar.fastq.gz",sample=SAMPLES),
@@ -60,19 +62,47 @@ rule all: #TODO eventually produce all files, esp. BWs
 		# expand("02_alignment/{sample}.bam.bai",sample=SAMPLES),
 		expand("02b_alignment_all/{sample}_all.bam", sample=SAMPLES),
 		expand("02b_alignment_all/{sample}_all.bam.bai", sample=SAMPLES),
+		expand("02b_alignment_all_STARfix/{sample}_all.bam", sample=SAMPLES),
+		expand("02b_alignment_all_STARfix/{sample}_all.bam.bai", sample=SAMPLES),
 		expand("02c_alignment_all_umitools/{sample}_all_dedup.bam", sample=SAMPLES),
 		expand("02c_alignment_all_umitools/{sample}_all_dedup.bam.bai", sample=SAMPLES),
+		expand("02c_alignment_all_umitools_STARfix/{sample}_all_dedup.bam", sample=SAMPLES),
+		expand("02c_alignment_all_umitools_STARfix/{sample}_all_dedup.bam.bai", sample=SAMPLES),
 		"03_FeatureCounts/featureCounts_multimappers.list",
 		"03_FeatureCounts/featureCounts_uniq.list",
+		"03_FeatureCounts/featureCounts_win10k_multimappers.list",
+		"03_FeatureCounts/featureCounts_win10k_uniq.list",
 		"03_FeatureCounts/featureCounts_multimappers_TPM.txt",
 		"03_FeatureCounts/featureCounts_uniq_TPM.txt",
+		"03_FeatureCounts/featureCounts_win10k_multimappers_TPM.txt",
+		"03_FeatureCounts/featureCounts_win10k_uniq_TPM.txt",
+		"03_FeatureCounts_STARfix/featureCounts_multimappers.list",
+		"03_FeatureCounts_STARfix/featureCounts_uniq.list",
+		"03_FeatureCounts_STARfix/featureCounts_win10k_multimappers.list",
+		"03_FeatureCounts_STARfix/featureCounts_win10k_uniq.list",
+		"03_FeatureCounts_STARfix/featureCounts_multimappers_TPM.txt",
+		"03_FeatureCounts_STARfix/featureCounts_uniq_TPM.txt",
+		"03_FeatureCounts_STARfix/featureCounts_win10k_multimappers_TPM.txt",
+		"03_FeatureCounts_STARfix/featureCounts_win10k_uniq_TPM.txt",
 		"03a_FeatureCounts_umitools/featureCounts_umitools_multimappers.list",
 		"03a_FeatureCounts_umitools/featureCounts_umitools_uniq.list",
+		"03a_FeatureCounts_umitools/featureCounts_umitools_win10k_multimappers.list",
+		"03a_FeatureCounts_umitools/featureCounts_umitools_win10k_uniq.list",
 		"03a_FeatureCounts_umitools/featureCounts_umitools_multimappers_TPM.txt",
 		"03a_FeatureCounts_umitools/featureCounts_umitools_uniq_TPM.txt",
+		"03a_FeatureCounts_umitools/featureCounts_umitools_win10k_multimappers_TPM.txt",
+		"03a_FeatureCounts_umitools/featureCounts_umitools_win10k_uniq_TPM.txt",
+		"03a_FeatureCounts_umitools_STARfix/featureCounts_umitools_multimappers.list",
+		"03a_FeatureCounts_umitools_STARfix/featureCounts_umitools_uniq.list",
+		"03a_FeatureCounts_umitools_STARfix/featureCounts_umitools_win10k_multimappers.list",
+		"03a_FeatureCounts_umitools_STARfix/featureCounts_umitools_win10k_uniq.list",
+		"03a_FeatureCounts_umitools_STARfix/featureCounts_umitools_multimappers_TPM.txt",
+		"03a_FeatureCounts_umitools_STARfix/featureCounts_umitools_uniq_TPM.txt",
+		"03a_FeatureCounts_umitools_STARfix/featureCounts_umitools_win10k_multimappers_TPM.txt",
+		"03a_FeatureCounts_umitools_STARfix/featureCounts_umitools_win10k_uniq_TPM.txt",
 		# "03_FetaureCounts/featureCounts_exons_multimappers.list",
 		# "03_FetaureCounts/featureCounts_exons_uniq.list",
-		expand("04_BigWig/{sample}_all_dedup_reads_plus.bw",sample=SAMPLES),
+		expand("04_BigWig/{sample}_all_dedup_reads_fwd.bw",sample=SAMPLES),
 		expand("04_BigWig/{sample}_all_dedup_reads_rev.bw",sample=SAMPLES),
 		expand("04_BigWig/{sample}_all_dedup_CPM_fwd.bw",sample=SAMPLES),
 		expand("04_BigWig/{sample}_all_dedup_CPM_rev.bw",sample=SAMPLES),
@@ -80,6 +110,10 @@ rule all: #TODO eventually produce all files, esp. BWs
 		expand("04a_BigWig_umitools/{sample}_all_umitools_reads_rev.bw",sample=SAMPLES),
 		expand("04a_BigWig_umitools/{sample}_all_umitools_CPM_fwd.bw",sample=SAMPLES),
 		expand("04a_BigWig_umitools/{sample}_all_umitools_CPM_rev.bw",sample=SAMPLES),
+		expand("04b_BigWig_umitools_STARfix/{sample}_all_umitools_STARfix_reads_fwd.bw", sample=SAMPLES),
+		expand("04b_BigWig_umitools_STARfix/{sample}_all_umitools_STARfix_reads_rev.bw", sample=SAMPLES),
+		expand("04b_BigWig_umitools_STARfix/{sample}_all_umitools_STARfix_CPM_fwd.bw", sample=SAMPLES),
+		expand("04b_BigWig_umitools_STARfix/{sample}_all_umitools_STARfix_CPM_rev.bw", sample=SAMPLES)
 		# expand("04_BigWig/{sample}.sam",sample=SAMPLES),
 		# expand("04_BigWig/{sample}_PROFILE_5end_fwd.bw",sample=SAMPLES),
 		# expand("04_BigWig/{sample}_PROFILE_5end_rev.bw",sample=SAMPLES),
@@ -227,6 +261,20 @@ rule align_all:
 	shell:
 		"STAR --outFileNamePrefix {params.prefix_all} --readFilesCommand zcat --genomeDir {params.index_dir} --genomeLoad LoadAndRemove --outSAMtype BAM Unsorted --readFilesIn {input.reads_all}"
 
+rule align_all_STARfix:
+	input:
+		reads_all = "01_preprocessing/01d_{sample}_flexbar.fastq.gz",
+	params:
+		index_dir = STAR_INDEX,
+		prefix_all = "02b_alignment_all_STARfix/{sample}_all_STAR_"
+	output:
+		bam_all = "02b_alignment_all_STARfix/{sample}_all_STAR_Aligned.out.bam"
+	conda:
+		"envs/processing.yml"
+	shell:
+		"STAR --outFilterScoreMinOverLread 0 --outFilterMatchNminOverLread 0 --outFilterMatchNmin 0 --outFileNamePrefix {params.prefix_all} --readFilesCommand zcat --genomeDir {params.index_dir} --genomeLoad LoadAndRemove --outSAMtype BAM Unsorted --readFilesIn {input.reads_all}"
+
+
 rule align_all_umitools:
 	input:
 		reads_all = "01a_preprocessing_umitools/01d_{sample}_flexbar_umitools.fastq.gz",
@@ -239,6 +287,19 @@ rule align_all_umitools:
 		"envs/processing.yml"
 	shell:
 		"STAR --outFileNamePrefix {params.prefix_all} --readFilesCommand zcat --genomeDir {params.index_dir} --genomeLoad LoadAndRemove --outSAMtype BAM Unsorted --readFilesIn {input.reads_all}"
+
+rule align_all_umitools_STARfix:
+	input:
+		reads_all = "01a_preprocessing_umitools/01d_{sample}_flexbar_umitools.fastq.gz",
+	params:
+		index_dir = STAR_INDEX,
+		prefix_all = "02c_alignment_all_umitools_STARfix/{sample}_all_STAR_"
+	output:
+		bam_all = "02c_alignment_all_umitools_STARfix/{sample}_all_STAR_Aligned.out.bam"
+	conda:
+		"envs/processing.yml"
+	shell:
+		"STAR --outFilterScoreMinOverLread 0 --outFilterMatchNminOverLread 0 --outFilterMatchNmin 0 --outFileNamePrefix {params.prefix_all} --readFilesCommand zcat --genomeDir {params.index_dir} --genomeLoad LoadAndRemove --outSAMtype BAM Unsorted --readFilesIn {input.reads_all}"
 
 # rule align:
 # 	input:
@@ -269,12 +330,40 @@ rule sort_all:
 		samtools index {output.bam_all}
 		"""
 
+rule sort_all_STARfix:
+	input:
+		bam_all = "02b_alignment_all_STARfix/{sample}_all_STAR_Aligned.out.bam"
+	output:
+		bam_all = "02b_alignment_all_STARfix/{sample}_all.bam",
+		bai_all = "02b_alignment_all_STARfix/{sample}_all.bam.bai"
+	conda:
+		"envs/processing.yml"
+	shell:
+		"""
+		samtools sort {input.bam_all} > {output.bam_all}
+		samtools index {output.bam_all}
+		"""
+
 rule sort_all_umitools:
 	input:
 		bam_all = "02c_alignment_all_umitools/{sample}_all_STAR_Aligned.out.bam"
 	output:
 		bam_all = "02c_alignment_all_umitools/{sample}_all.bam",
 		bai_all = "02c_alignment_all_umitools/{sample}_all.bam.bai"
+	conda:
+		"envs/processing.yml"
+	shell:
+		"""
+		samtools sort {input.bam_all} > {output.bam_all}
+		samtools index {output.bam_all}
+		"""
+
+rule sort_all_umitools_STARfix:
+	input:
+		bam_all = "02c_alignment_all_umitools_STARfix/{sample}_all_STAR_Aligned.out.bam"
+	output:
+		bam_all = "02c_alignment_all_umitools_STARfix/{sample}_all.bam",
+		bai_all = "02c_alignment_all_umitools_STARfix/{sample}_all.bam.bai"
 	conda:
 		"envs/processing.yml"
 	shell:
@@ -296,12 +385,39 @@ rule umitools_dedup_all:
 		umi_tools dedup -I {input.bam} -S {output.bam}
 		"""
 
+rule umitools_dedup_all_STARfix:
+	input:
+		bam = "02c_alignment_all_umitools_STARfix/{sample}_all.bam",
+		bai = "02c_alignment_all_umitools_STARfix/{sample}_all.bam.bai"
+	output:
+		bam = temp("02c_alignment_all_umitools_STARfix/{sample}_all_dedup_unsorted.bam")
+	conda:
+		"envs/umitools_fix.yml"
+	shell:
+		"""
+		umi_tools dedup -I {input.bam} -S {output.bam}
+		"""
+
 rule sort_dedup:
 	input:
 		bam_all = "02c_alignment_all_umitools/{sample}_all_dedup_unsorted.bam"
 	output:
 		bam_all = "02c_alignment_all_umitools/{sample}_all_dedup.bam",
 		bai_all = "02c_alignment_all_umitools/{sample}_all_dedup.bam.bai"
+	conda:
+		"envs/processing.yml"
+	shell:
+		"""
+		samtools sort {input.bam_all} > {output.bam_all}
+		samtools index {output.bam_all}
+		"""
+
+rule sort_dedup_STARfix:
+	input:
+		bam_all = "02c_alignment_all_umitools_STARfix/{sample}_all_dedup_unsorted.bam"
+	output:
+		bam_all = "02c_alignment_all_umitools_STARfix/{sample}_all_dedup.bam",
+		bai_all = "02c_alignment_all_umitools_STARfix/{sample}_all_dedup.bam.bai"
 	conda:
 		"envs/processing.yml"
 	shell:
@@ -317,9 +433,12 @@ rule featureCounts:
 		bam = expand("02b_alignment_all/{sample}_all.bam",sample=SAMPLES) #use list of files
 	output:
 		multi = "03_FeatureCounts/featureCounts_multimappers.list",
-		uniq = "03_FeatureCounts/featureCounts_uniq.list"
+		uniq = "03_FeatureCounts/featureCounts_uniq.list",
+		multi_10k = "03_FeatureCounts/featureCounts_win10k_multimappers.list",
+		uniq_10k = "03_FeatureCounts/featureCounts_win10k_uniq.list"
 	params:
-		gtf=GTF
+		gtf=GTF,
+		win10k="/home/jmikolajczyk/00_seq_references/genome/hg41/hg41_window10000.gtf"
 	conda:
 		"envs/processing.yml"
 	shell:
@@ -328,21 +447,75 @@ rule featureCounts:
 		"""
 		featureCounts -t exon -g gene_id -M -s 1 -a {params.gtf} -o {output.multi} {input.bam}
 		featureCounts -t exon -g gene_id -s 1 -a {params.gtf} -o {output.uniq} {input.bam}
+		featureCounts -t exon -g gene_id -M -s 1 -a {params.win10k} -o {output.multi_10k} {input.bam}
+		featureCounts -t exon -g gene_id -s 1 -a {params.win10k} -o {output.uniq_10k} {input.bam}
 		"""
 
 rule featureCounts2TPM:
 	input:
 		multi = "03_FeatureCounts/featureCounts_multimappers.list",
-		uniq = "03_FeatureCounts/featureCounts_uniq.list"
+		uniq = "03_FeatureCounts/featureCounts_uniq.list",
+		multi_10k = "03_FeatureCounts/featureCounts_win10k_multimappers.list",
+		uniq_10k = "03_FeatureCounts/featureCounts_win10k_uniq.list"
 	output:
 		tpm_multi = "03_FeatureCounts/featureCounts_multimappers_TPM.txt",
-		tpm_uniq = "03_FeatureCounts/featureCounts_uniq_TPM.txt"
+		tpm_uniq = "03_FeatureCounts/featureCounts_uniq_TPM.txt",
+		tpm_multi_10k = "03_FeatureCounts/featureCounts_win10k_multimappers_TPM.txt",
+		tpm_uniq_10k = "03_FeatureCounts/featureCounts_win10k_uniq_TPM.txt"
 	conda:
 		"envs/processing.yml"
 	shell:
 		"""
 		python scripts/featureCounts2TPM.py -i {input.multi} -o {output.tpm_multi}
 		python scripts/featureCounts2TPM.py -i {input.uniq} -o {output.tpm_uniq}
+		python scripts/featureCounts2TPM.py -i {input.multi_10k} -o {output.tpm_multi_10k}
+		python scripts/featureCounts2TPM.py -i {input.uniq_10k} -o {output.tpm_uniq_10k}
+		"""
+
+rule featureCounts_STARfix:
+	# for files without umitools deduplication
+	# Disabled multioverlap
+	input:
+		bam = expand("02b_alignment_all_STARfix/{sample}_all.bam",sample=SAMPLES) #use list of files
+	output:
+		multi = "03_FeatureCounts_STARfix/featureCounts_multimappers.list",
+		uniq = "03_FeatureCounts_STARfix/featureCounts_uniq.list",
+		multi_10k = "03_FeatureCounts_STARfix/featureCounts_win10k_multimappers.list",
+		uniq_10k = "03_FeatureCounts_STARfix/featureCounts_win10k_uniq.list"
+	params:
+		gtf=GTF,
+		win10k="/home/jmikolajczyk/00_seq_references/genome/hg41/hg41_window10000.gtf"
+	conda:
+		"envs/processing.yml"
+	shell:
+		# Use -M for multimappers, -s 1 for strandedness, -O for overlapping reads
+		# -a for annotation file, -o for output file
+		"""
+		featureCounts -t exon -g gene_id -M -s 1 -a {params.gtf} -o {output.multi} {input.bam}
+		featureCounts -t exon -g gene_id -s 1 -a {params.gtf} -o {output.uniq} {input.bam}
+		featureCounts -t exon -g gene_id -M -s 1 -a {params.win10k} -o {output.multi_10k} {input.bam}
+		featureCounts -t exon -g gene_id -s 1 -a {params.win10k} -o {output.uniq_10k} {input.bam}
+		"""
+
+rule featureCounts2TPM_STARfix:
+	input:
+		multi = "03_FeatureCounts_STARfix/featureCounts_multimappers.list",
+		uniq = "03_FeatureCounts_STARfix/featureCounts_uniq.list",
+		multi_10k = "03_FeatureCounts_STARfix/featureCounts_win10k_multimappers.list",
+		uniq_10k = "03_FeatureCounts_STARfix/featureCounts_win10k_uniq.list"
+	output:
+		tpm_multi = "03_FeatureCounts_STARfix/featureCounts_multimappers_TPM.txt",
+		tpm_uniq = "03_FeatureCounts_STARfix/featureCounts_uniq_TPM.txt",
+		tpm_multi_10k = "03_FeatureCounts_STARfix/featureCounts_win10k_multimappers_TPM.txt",
+		tpm_uniq_10k = "03_FeatureCounts_STARfix/featureCounts_win10k_uniq_TPM.txt"
+	conda:
+		"envs/processing.yml"
+	shell:
+		"""
+		python scripts/featureCounts2TPM.py -i {input.multi} -o {output.tpm_multi}
+		python scripts/featureCounts2TPM.py -i {input.uniq} -o {output.tpm_uniq}
+		python scripts/featureCounts2TPM.py -i {input.multi_10k} -o {output.tpm_multi_10k}
+		python scripts/featureCounts2TPM.py -i {input.uniq_10k} -o {output.tpm_uniq_10k}
 		"""
 
 rule featureCounts_umitools:
@@ -351,9 +524,12 @@ rule featureCounts_umitools:
 		bam = expand("02c_alignment_all_umitools/{sample}_all_dedup.bam",sample=SAMPLES) #use list of files
 	output:
 		multi = "03a_FeatureCounts_umitools/featureCounts_umitools_multimappers.list",
-		uniq = "03a_FeatureCounts_umitools/featureCounts_umitools_uniq.list"
+		uniq = "03a_FeatureCounts_umitools/featureCounts_umitools_uniq.list",
+		multi_10k = "03a_FeatureCounts_umitools/featureCounts_umitools_win10k_multimappers.list",
+		uniq_10k = "03a_FeatureCounts_umitools/featureCounts_umitools_win10k_uniq.list"
 	params:
-		gtf=GTF
+		gtf=GTF,
+		win10k="/home/jmikolajczyk/00_seq_references/genome/hg41/hg41_window10000.gtf"
 	conda:
 		"envs/processing.yml"
 	shell:
@@ -362,21 +538,75 @@ rule featureCounts_umitools:
 		"""
 		featureCounts -t exon -g gene_id -M -s 1 -a {params.gtf} -o {output.multi} {input.bam}
 		featureCounts -t exon -g gene_id -s 1 -a {params.gtf} -o {output.uniq} {input.bam}
+		featureCounts -t exon -g gene_id -M -s 1 -a {params.win10k} -o {output.multi_10k} {input.bam}
+		featureCounts -t exon -g gene_id -s 1 -a {params.win10k} -o {output.uniq_10k} {input.bam}
 		"""
 
 rule featureCounts_umitools2TPM:
 	input:
 		multi = "03a_FeatureCounts_umitools/featureCounts_umitools_multimappers.list",
-		uniq = "03a_FeatureCounts_umitools/featureCounts_umitools_uniq.list"
+		uniq = "03a_FeatureCounts_umitools/featureCounts_umitools_uniq.list",
+		multi_10k = "03a_FeatureCounts_umitools/featureCounts_umitools_win10k_multimappers.list",
+		uniq_10k = "03a_FeatureCounts_umitools/featureCounts_umitools_win10k_uniq.list"
 	output:
 		tpm_multi = "03a_FeatureCounts_umitools/featureCounts_umitools_multimappers_TPM.txt",
-		tpm_uniq = "03a_FeatureCounts_umitools/featureCounts_umitools_uniq_TPM.txt"
+		tpm_uniq = "03a_FeatureCounts_umitools/featureCounts_umitools_uniq_TPM.txt",
+		tpm_multi_10k = "03a_FeatureCounts_umitools/featureCounts_umitools_win10k_multimappers_TPM.txt",
+		tpm_uniq_10k = "03a_FeatureCounts_umitools/featureCounts_umitools_win10k_uniq_TPM.txt"
 	conda:
 		"envs/processing.yml"
 	shell:
 		"""
 		python scripts/featureCounts2TPM.py -i {input.multi} -o {output.tpm_multi}
 		python scripts/featureCounts2TPM.py -i {input.uniq} -o {output.tpm_uniq}
+		python scripts/featureCounts2TPM.py -i {input.multi_10k} -o {output.tpm_multi_10k}
+		python scripts/featureCounts2TPM.py -i {input.uniq_10k} -o {output.tpm_uniq_10k}
+		"""
+
+rule featureCounts_umitools_STARfix:
+	# Added -R for debugging
+	# Disabled multioverlap
+	input:
+		bam = expand("02c_alignment_all_umitools_STARfix/{sample}_all_dedup.bam",sample=SAMPLES) #use list of files
+	output:
+		multi = "03a_FeatureCounts_umitools_STARfix/featureCounts_umitools_multimappers.list",
+		uniq = "03a_FeatureCounts_umitools_STARfix/featureCounts_umitools_uniq.list",
+		multi_10k = "03a_FeatureCounts_umitools_STARfix/featureCounts_umitools_win10k_multimappers.list",
+		uniq_10k = "03a_FeatureCounts_umitools_STARfix/featureCounts_umitools_win10k_uniq.list"
+	params:
+		gtf=GTF,
+		win10k="/home/jmikolajczyk/00_seq_references/genome/hg41/hg41_window10000.gtf"
+	conda:
+		"envs/processing.yml"
+	shell:
+		# Use -M for multimappers, -s 1 for strandedness, -O for overlapping reads
+		# -a for annotation file, -o for output file
+		"""
+		featureCounts -t exon -g gene_id -M -s 1 -a {params.gtf} -o {output.multi} {input.bam}
+		featureCounts -t exon -g gene_id -s 1 -a {params.gtf} -o {output.uniq} {input.bam}
+		featureCounts -t exon -g gene_id -M -s 1 -a {params.win10k} -o {output.multi_10k} {input.bam}
+		featureCounts -t exon -g gene_id -s 1 -a {params.win10k} -o {output.uniq_10k} {input.bam}
+		"""
+
+rule featureCounts_umitools2TPM_STARfix:
+	input:
+		multi = "03a_FeatureCounts_umitools_STARfix/featureCounts_umitools_multimappers.list",
+		uniq = "03a_FeatureCounts_umitools_STARfix/featureCounts_umitools_uniq.list",
+		multi_10k = "03a_FeatureCounts_umitools_STARfix/featureCounts_umitools_win10k_multimappers.list",
+		uniq_10k = "03a_FeatureCounts_umitools_STARfix/featureCounts_umitools_win10k_uniq.list"
+	output:
+		tpm_multi = "03a_FeatureCounts_umitools_STARfix/featureCounts_umitools_multimappers_TPM.txt",
+		tpm_uniq = "03a_FeatureCounts_umitools_STARfix/featureCounts_umitools_uniq_TPM.txt",
+		tpm_multi_10k = "03a_FeatureCounts_umitools_STARfix/featureCounts_umitools_win10k_multimappers_TPM.txt",
+		tpm_uniq_10k = "03a_FeatureCounts_umitools_STARfix/featureCounts_umitools_win10k_uniq_TPM.txt"
+	conda:
+		"envs/processing.yml"
+	shell:
+		"""
+		python scripts/featureCounts2TPM.py -i {input.multi} -o {output.tpm_multi}
+		python scripts/featureCounts2TPM.py -i {input.uniq} -o {output.tpm_uniq}
+		python scripts/featureCounts2TPM.py -i {input.multi_10k} -o {output.tpm_multi_10k}
+		python scripts/featureCounts2TPM.py -i {input.uniq_10k} -o {output.tpm_uniq_10k}
 		"""
 
 rule BigWigs_CPM:
@@ -399,7 +629,7 @@ rule BigWigs_raw:
 		bam = "02b_alignment_all/{sample}_all.bam",
 		bai = "02b_alignment_all/{sample}_all.bam.bai"
 	output:
-		bwP = "04_BigWig/{sample}_all_dedup_reads_plus.bw",
+		bwP = "04_BigWig/{sample}_all_dedup_reads_fwd.bw",
 		bwM = "04_BigWig/{sample}_all_dedup_reads_rev.bw"
 	conda:
 		"envs/processing.yml"
@@ -431,6 +661,36 @@ rule BigWigs_umitools_raw:
 	output:
 		bwP = "04a_BigWig_umitools/{sample}_all_umitools_reads_fwd.bw",
 		bwM = "04a_BigWig_umitools/{sample}_all_umitools_reads_rev.bw"
+	conda:
+		"envs/processing.yml"
+	shell:
+		"""
+		bamCoverage --bam {input.bam} -of bigwig -o {output.bwP} --filterRNAstrand reverse --binSize 1
+		bamCoverage --bam {input.bam} -of bigwig -o {output.bwM} --filterRNAstrand forward --binSize 1
+		"""
+
+rule BigWigs_umitools_CPM_STARfix:
+	input:
+		bam = "02c_alignment_all_umitools_STARfix/{sample}_all_dedup.bam",
+		bai = "02c_alignment_all_umitools_STARfix/{sample}_all_dedup.bam.bai"
+	output:
+		bwP = "04b_BigWig_umitools_STARfix/{sample}_all_umitools_STARfix_CPM_fwd.bw",
+		bwM = "04b_BigWig_umitools_STARfix/{sample}_all_umitools_STARfix_CPM_rev.bw"
+	conda:
+		"envs/processing.yml"
+	shell:
+		"""
+		bamCoverage --bam {input.bam} -of bigwig -o {output.bwP} --filterRNAstrand reverse --normalizeUsing CPM --binSize 1
+		bamCoverage --bam {input.bam} -of bigwig -o {output.bwM} --filterRNAstrand forward --normalizeUsing CPM --binSize 1
+		"""
+
+rule BigWigs_umitools_raw_STARfix:
+	input:
+		bam = "02c_alignment_all_umitools_STARfix/{sample}_all_dedup.bam",
+		bai = "02c_alignment_all_umitools_STARfix/{sample}_all_dedup.bam.bai"
+	output:
+		bwP = "04b_BigWig_umitools_STARfix/{sample}_all_umitools_STARfix_reads_fwd.bw",
+		bwM = "04b_BigWig_umitools_STARfix/{sample}_all_umitools_STARfix_reads_rev.bw"
 	conda:
 		"envs/processing.yml"
 	shell:
