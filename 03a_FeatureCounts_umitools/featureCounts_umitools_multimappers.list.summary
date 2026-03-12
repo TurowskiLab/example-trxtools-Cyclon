@@ -1,5 +1,5 @@
-Status	02c_alignment_all_umitools/NR_none_none_400mJ_1_all_dedup.bam	02c_alignment_all_umitools/AG241010_Cyclon-CT_none_120mJ_2_all_dedup.bam	02c_alignment_all_umitools/AG241010_Cyclon-NT_none_120mJ_1_all_dedup.bam	02c_alignment_all_umitools/NR_RPP25L_none_400mJ_1_all_dedup.bam	02c_alignment_all_umitools/AG241010_Cyclon-NT_none_120mJ_2_all_dedup.bam	02c_alignment_all_umitools/NR_none_none_400mJ_2_all_dedup.bam	02c_alignment_all_umitools/AG241010_Cyclon_none_120mJ_2_all_dedup.bam	02c_alignment_all_umitools/AG241010_Cyclon_none_120mJ_1_all_dedup.bam	02c_alignment_all_umitools/NR_RPP25L_none_400mJ_2_all_dedup.bam	02c_alignment_all_umitools/AG241010_none_none_120mJ_2_all_dedup.bam	02c_alignment_all_umitools/AG241010_Cyclon-CT_none_120mJ_1_all_dedup.bam	02c_alignment_all_umitools/AG241010_none_none_120mJ_1_all_dedup.bam
-Assigned	32	59111	19275	588	53139	108	40201	45762	545	998	17404	242
+Status	02c_alignment_all_umitools/AG241010_Cyclon-CT_none_120mJ_2_all_dedup.bam	02c_alignment_all_umitools/AG241010_Cyclon-NT_none_120mJ_1_all_dedup.bam	02c_alignment_all_umitools/none_WT_2_R1_all_dedup.bam	02c_alignment_all_umitools/AG241010_Cyclon-NT_none_120mJ_2_all_dedup.bam	02c_alignment_all_umitools/AG241010_Cyclon_none_120mJ_2_all_dedup.bam	02c_alignment_all_umitools/AG241010_Cyclon_none_120mJ_1_all_dedup.bam	02c_alignment_all_umitools/RPP25L_FH-RPP25L_1_R1_all_dedup.bam	02c_alignment_all_umitools/RPP25L_FH-RPP25L_2_R1_all_dedup.bam	02c_alignment_all_umitools/AG241010_none_none_120mJ_2_all_dedup.bam	02c_alignment_all_umitools/none_WT_1_R1_all_dedup.bam	02c_alignment_all_umitools/AG241010_Cyclon-CT_none_120mJ_1_all_dedup.bam	02c_alignment_all_umitools/AG241010_none_none_120mJ_1_all_dedup.bam
+Assigned	73660	25854	108	67809	49718	69808	587	524	1568	32	20679	569
 Unassigned_Unmapped	0	0	0	0	0	0	0	0	0	0	0	0
 Unassigned_Read_Type	0	0	0	0	0	0	0	0	0	0	0	0
 Unassigned_Singleton	0	0	0	0	0	0	0	0	0	0	0	0
@@ -10,6 +10,6 @@ Unassigned_Duplicate	0	0	0	0	0	0	0	0	0	0	0	0
 Unassigned_MultiMapping	0	0	0	0	0	0	0	0	0	0	0	0
 Unassigned_Secondary	0	0	0	0	0	0	0	0	0	0	0	0
 Unassigned_NonSplit	0	0	0	0	0	0	0	0	0	0	0	0
-Unassigned_NoFeatures	94	196454	183369	450	209419	248	202524	315795	13663	10589	77132	1669
+Unassigned_NoFeatures	329810	313709	248	380971	330967	611055	451	484	20436	94	118645	11116
 Unassigned_Overlapping_Length	0	0	0	0	0	0	0	0	0	0	0	0
-Unassigned_Ambiguity	279	55502	23533	4726	50355	853	44205	34900	13	2442	25203	505
+Unassigned_Ambiguity	61467	25855	853	55547	47951	39299	4726	3015	2675	279	27549	525

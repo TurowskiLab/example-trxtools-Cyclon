@@ -1,5 +1,5 @@
-Status	02b_alignment_all/NR_none_none_400mJ_1_all.bam	02b_alignment_all/AG241010_Cyclon-CT_none_120mJ_2_all.bam	02b_alignment_all/AG241010_Cyclon-NT_none_120mJ_1_all.bam	02b_alignment_all/NR_RPP25L_none_400mJ_1_all.bam	02b_alignment_all/AG241010_Cyclon-NT_none_120mJ_2_all.bam	02b_alignment_all/NR_none_none_400mJ_2_all.bam	02b_alignment_all/AG241010_Cyclon_none_120mJ_2_all.bam	02b_alignment_all/AG241010_Cyclon_none_120mJ_1_all.bam	02b_alignment_all/NR_RPP25L_none_400mJ_2_all.bam	02b_alignment_all/AG241010_none_none_120mJ_2_all.bam	02b_alignment_all/AG241010_Cyclon-CT_none_120mJ_1_all.bam	02b_alignment_all/AG241010_none_none_120mJ_1_all.bam
-Assigned	16	95719	12569	252	69729	33	43793	40593	172	555	15690	70
+Status	02b_alignment_all/AG241010_Cyclon-CT_none_120mJ_2_all.bam	02b_alignment_all/AG241010_Cyclon-NT_none_120mJ_1_all.bam	02b_alignment_all/none_WT_2_R1_all.bam	02b_alignment_all/AG241010_Cyclon-NT_none_120mJ_2_all.bam	02b_alignment_all/AG241010_Cyclon_none_120mJ_2_all.bam	02b_alignment_all/AG241010_Cyclon_none_120mJ_1_all.bam	02b_alignment_all/RPP25L_FH-RPP25L_1_R1_all.bam	02b_alignment_all/RPP25L_FH-RPP25L_2_R1_all.bam	02b_alignment_all/AG241010_none_none_120mJ_2_all.bam	02b_alignment_all/none_WT_1_R1_all.bam	02b_alignment_all/AG241010_Cyclon-CT_none_120mJ_1_all.bam	02b_alignment_all/AG241010_none_none_120mJ_1_all.bam
+Assigned	95719	12569	33	69729	43793	40593	252	187	555	16	15690	70
 Unassigned_Unmapped	0	0	0	0	0	0	0	0	0	0	0	0
 Unassigned_Read_Type	0	0	0	0	0	0	0	0	0	0	0	0
 Unassigned_Singleton	0	0	0	0	0	0	0	0	0	0	0	0
@@ -7,9 +7,9 @@ Unassigned_MappingQuality	0	0	0	0	0	0	0	0	0	0	0	0
 Unassigned_Chimera	0	0	0	0	0	0	0	0	0	0	0	0
 Unassigned_FragmentLength	0	0	0	0	0	0	0	0	0	0	0	0
 Unassigned_Duplicate	0	0	0	0	0	0	0	0	0	0	0	0
-Unassigned_MultiMapping	1586	4689628	1441399	70990	3631888	9093	2631215	3786531	25219	55879	888486	24997
+Unassigned_MultiMapping	4689628	1441399	9093	3631888	2631215	3786531	70990	51320	55879	1586	888486	24997
 Unassigned_Secondary	0	0	0	0	0	0	0	0	0	0	0	0
 Unassigned_NonSplit	0	0	0	0	0	0	0	0	0	0	0	0
-Unassigned_NoFeatures	12	139445	192775	718	160116	9	163829	283054	2892622	6355	41403	1287
+Unassigned_NoFeatures	139445	192775	9	160116	163829	283054	718	721	6355	12	41403	1287
 Unassigned_Overlapping_Length	0	0	0	0	0	0	0	0	0	0	0	0
-Unassigned_Ambiguity	92	108851	7728	2315396	51187	598	30634	12943	44	265	12300	16
+Unassigned_Ambiguity	108851	7728	598	51187	30634	12943	2315396	794433	265	92	12300	16

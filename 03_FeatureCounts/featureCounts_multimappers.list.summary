@@ -1,5 +1,5 @@
-Status	02b_alignment_all/NR_none_none_400mJ_1_all.bam	02b_alignment_all/AG241010_Cyclon-CT_none_120mJ_2_all.bam	02b_alignment_all/AG241010_Cyclon-NT_none_120mJ_1_all.bam	02b_alignment_all/NR_RPP25L_none_400mJ_1_all.bam	02b_alignment_all/AG241010_Cyclon-NT_none_120mJ_2_all.bam	02b_alignment_all/NR_none_none_400mJ_2_all.bam	02b_alignment_all/AG241010_Cyclon_none_120mJ_2_all.bam	02b_alignment_all/AG241010_Cyclon_none_120mJ_1_all.bam	02b_alignment_all/NR_RPP25L_none_400mJ_2_all.bam	02b_alignment_all/AG241010_none_none_120mJ_2_all.bam	02b_alignment_all/AG241010_Cyclon-CT_none_120mJ_1_all.bam	02b_alignment_all/AG241010_none_none_120mJ_1_all.bam
-Assigned	48	921913	120672	2863	594711	301	342958	431468	2868	3922	134073	505
+Status	02b_alignment_all/AG241010_Cyclon-CT_none_120mJ_2_all.bam	02b_alignment_all/AG241010_Cyclon-NT_none_120mJ_1_all.bam	02b_alignment_all/none_WT_2_R1_all.bam	02b_alignment_all/AG241010_Cyclon-NT_none_120mJ_2_all.bam	02b_alignment_all/AG241010_Cyclon_none_120mJ_2_all.bam	02b_alignment_all/AG241010_Cyclon_none_120mJ_1_all.bam	02b_alignment_all/RPP25L_FH-RPP25L_1_R1_all.bam	02b_alignment_all/RPP25L_FH-RPP25L_2_R1_all.bam	02b_alignment_all/AG241010_none_none_120mJ_2_all.bam	02b_alignment_all/none_WT_1_R1_all.bam	02b_alignment_all/AG241010_Cyclon-CT_none_120mJ_1_all.bam	02b_alignment_all/AG241010_none_none_120mJ_1_all.bam
+Assigned	921913	120672	301	594711	342958	431468	2863	4042	3922	48	134073	505
 Unassigned_Unmapped	0	0	0	0	0	0	0	0	0	0	0	0
 Unassigned_Read_Type	0	0	0	0	0	0	0	0	0	0	0	0
 Unassigned_Singleton	0	0	0	0	0	0	0	0	0	0	0	0
@@ -10,6 +10,6 @@ Unassigned_Duplicate	0	0	0	0	0	0	0	0	0	0	0	0
 Unassigned_MultiMapping	0	0	0	0	0	0	0	0	0	0	0	0
 Unassigned_Secondary	0	0	0	0	0	0	0	0	0	0	0	0
 Unassigned_NonSplit	0	0	0	0	0	0	0	0	0	0	0	0
-Unassigned_NoFeatures	367	2187074	1303365	29205	2057417	1878	1737458	3395841	2915145	44806	544966	24549
+Unassigned_NoFeatures	2187074	1303365	1878	2057417	1737458	3395841	29205	19829	44806	367	544966	24549
 Unassigned_Overlapping_Length	0	0	0	0	0	0	0	0	0	0	0	0
-Unassigned_Ambiguity	1291	1924656	230434	2355288	1260792	7554	789055	295812	44	14326	278840	1316
+Unassigned_Ambiguity	1924656	230434	7554	1260792	789055	295812	2355288	822790	14326	1291	278840	1316

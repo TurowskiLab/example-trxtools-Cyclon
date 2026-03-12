@@ -1,0 +1,15 @@
+Status	02c_alignment_all_umitools/AG241010_Cyclon-CT_none_120mJ_2_all_dedup.bam	02c_alignment_all_umitools/AG241010_Cyclon-NT_none_120mJ_1_all_dedup.bam	02c_alignment_all_umitools/none_WT_2_R1_all_dedup.bam	02c_alignment_all_umitools/AG241010_Cyclon-NT_none_120mJ_2_all_dedup.bam	02c_alignment_all_umitools/AG241010_Cyclon_none_120mJ_2_all_dedup.bam	02c_alignment_all_umitools/AG241010_Cyclon_none_120mJ_1_all_dedup.bam	02c_alignment_all_umitools/RPP25L_FH-RPP25L_1_R1_all_dedup.bam	02c_alignment_all_umitools/RPP25L_FH-RPP25L_2_R1_all_dedup.bam	02c_alignment_all_umitools/AG241010_none_none_120mJ_2_all_dedup.bam	02c_alignment_all_umitools/none_WT_1_R1_all_dedup.bam	02c_alignment_all_umitools/AG241010_Cyclon-CT_none_120mJ_1_all_dedup.bam	02c_alignment_all_umitools/AG241010_none_none_120mJ_1_all_dedup.bam
+Assigned	21662	4720	109	16149	13104	12583	3904	2071	288	33	5570	58
+Unassigned_Unmapped	0	0	0	0	0	0	0	0	0	0	0	0
+Unassigned_Read_Type	0	0	0	0	0	0	0	0	0	0	0	0
+Unassigned_Singleton	0	0	0	0	0	0	0	0	0	0	0	0
+Unassigned_MappingQuality	0	0	0	0	0	0	0	0	0	0	0	0
+Unassigned_Chimera	0	0	0	0	0	0	0	0	0	0	0	0
+Unassigned_FragmentLength	0	0	0	0	0	0	0	0	0	0	0	0
+Unassigned_Duplicate	0	0	0	0	0	0	0	0	0	0	0	0
+Unassigned_MultiMapping	407748	320882	1093	440886	376274	649165	1816	1893	21434	364	146658	10681
+Unassigned_Secondary	0	0	0	0	0	0	0	0	0	0	0	0
+Unassigned_NonSplit	0	0	0	0	0	0	0	0	0	0	0	0
+Unassigned_NoFeatures	35527	39816	7	47292	39258	58414	44	59	2957	8	14645	1471
+Unassigned_Overlapping_Length	0	0	0	0	0	0	0	0	0	0	0	0
+Unassigned_Ambiguity	0	0	0	0	0	0	0	0	0	0	0	0
