@@ -71,7 +71,7 @@ rule all:
 		"03a_FeatureCounts_umitools_overlap/featureCounts_umitools_overlap_multimappers.list",
 		"03a_FeatureCounts_umitools_overlap/featureCounts_umitools_overlap_uniq.list",
 		"03a_FeatureCounts_umitools_overlap/featureCounts_umitools_overlap_multimappers_TPM.txt",
-		"03a_FeatureCounts_umitools_overlap/featureCounts_umitools_overlap_uniq_TPM.txt"
+		"03a_FeatureCounts_umitools_overlap/featureCounts_umitools_overlap_uniq_TPM.txt",
 		expand("04_BigWig/{sample}_all_reads_fwd.bw",sample=SAMPLES),
 		expand("04_BigWig/{sample}_all_reads_rev.bw",sample=SAMPLES),
 		expand("04_BigWig/{sample}_all_CPM_fwd.bw",sample=SAMPLES),
