@@ -25,10 +25,10 @@ def parseBarcode(bc):
     [firstN,postN]=[len(i) for i in bc.split(toGrep)]
     return firstN, toGrep, postN
 
-def readLengths(n):
-	f = path+n+name_elem
-	command = "zcat "+f+" | head -40 | scripts/fastqReadsLength.awk | cut -f1"
-	return int(subprocess.run([command],shell=True, stdout=subprocess.PIPE).stdout.decode('utf-8'))
+# def readLengths(n):
+# 	f = path+n+name_elem
+# 	command = "zcat "+f+" | head -40 | scripts/fastqReadsLength.awk | cut -f1"
+# 	return int(subprocess.run([command],shell=True, stdout=subprocess.PIPE).stdout.decode('utf-8'))
 
 df_names = pd.DataFrame({
 	'adaptor' : adaptors,
@@ -36,7 +36,7 @@ df_names = pd.DataFrame({
 	'barcode_pattern': [re.sub(r'([ATCG])', 'X', bc) for bc in barcodes],
 	'bcLen'	  : [len(bc)+1 for bc in barcodes], #+1 for fastx_trimmer
 	'longName' : longName,
-	'readLength': [readLengths(n) for n in longName],
+	# 'readLength': [readLengths(n) for n in longName],
 	'name'	  : SAMPLES}).set_index("name")
 
 print(df_names)
@@ -45,7 +45,7 @@ df_names.to_csv('names.tab', sep="\t")
 d1_name = df_names['longName'].to_dict()
 d2_bcLen = df_names['bcLen'].to_dict()
 d3_as = df_names['adaptor'].to_dict()
-d4_readLen = df_names['readLength'].to_dict()
+# d4_readLen = df_names['readLength'].to_dict()
 d5_bcPattern = df_names['barcode_pattern'].to_dict()
 
 #SnakeMake pipeline
