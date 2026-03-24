@@ -53,7 +53,7 @@ After the run finishes continue to the analysis steps below. If you're performin
 
 ## Create and activate jupyter environment
 ```
-conda env create -f envs/jupyter.yml -n jupyter-trxtools-0.5.yml
+conda env create -f envs/jupyter-trxtools-0.5.yml -n jupyter-trxtools-0.5
 conda activate jupyter-trxtools-0.5
 ```
 
