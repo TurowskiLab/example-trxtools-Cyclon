@@ -46,8 +46,8 @@ After the run finishes continue to the analysis steps below. If you're performin
 
 ## Create and activate jupyter environment
 ```
-conda env create -f envs/jupyter.yml
-conda activate jupyter
+conda env create -f envs/jupyter.yml -n jupyter-trxtools-05.yml
+conda activate jupyter-trxtools-0.5
 ```
 
 
