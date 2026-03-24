@@ -21,7 +21,7 @@ STAR --runThreadN 30 --runMode genomeGenerate --genomeDir hg41_STAR_index/ --gen
 
 **NOTE:** The STAR index can be saved to any location (--genomeDir).
 
-**IMPORTANT:** You need to specify the path to your STAR index in the ```SM_CRACprocessing3end_all.smk``` file. Set ```STAR_INDEX``` to an absolute path to your index, e.g. ```STAR_INDEX = "/home/user/seq_references/hg41/hg41_STAR_index/" ```
+**IMPORTANT:** You need to specify the path to your STAR index in the Snakefile. Set ```STAR_INDEX``` to an absolute path to your index, e.g. ```STAR_INDEX = "/home/user/seq_references/hg41/hg41_STAR_index/" ```
 
 ### Create and activate conda environment (you can use mamba instead)
 ```
@@ -29,16 +29,23 @@ conda env create -f envs/snakemake.yml
 conda activate snakemake
 ```
 ### Run Snakemake file to process raw files 
+
+Try a dry run first:
 ```
-snakemake -c64 --use-conda -s SM_CRACprocessing_read_3end.smk
+snakemake -c64 --use-conda -n
 ```
 **NOTE:** -c determines number of CPUs to use.
 
+If no errors are reported you can start the run proper:
+```
+snakemake -c64 --use-conda
+```
+
 OR if using slurm:
 ```
-snakemake  -c64 --use-conda -s SM_CRACprocessing_read_3end.smk --slurm -j12
+snakemake  -c64 --use-conda --slurm -j12
 ```
-**NOTE:** The first run of the Snakemake file ```SM_CRACprocessing3end_all.smk``` will initialize new conda environments. This may take several minutes.
+**NOTE:** The first run of the Snakemake file will initialize new conda environments. This may take several minutes.
 
 After the run finishes continue to the analysis steps below. If you're performing the analysis stage on a different machine (e.g. a desktop after running the pipeline on a cluster), copy the whole repository folder there, including the output files produced.
 
@@ -46,7 +53,7 @@ After the run finishes continue to the analysis steps below. If you're performin
 
 ## Create and activate jupyter environment
 ```
-conda env create -f envs/jupyter.yml -n jupyter-trxtools-05.yml
+conda env create -f envs/jupyter.yml -n jupyter-trxtools-0.5.yml
 conda activate jupyter-trxtools-0.5
 ```
 

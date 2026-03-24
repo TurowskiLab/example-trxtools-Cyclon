@@ -54,4 +54,3 @@ dependencies:
       - six==1.17.0
       - tzdata==2025.2
       - umi-tools==1.1.6
-prefix: /home/jmikolajczyk/mambaforge/envs/umi_tools_fix

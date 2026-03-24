@@ -162,4 +162,3 @@ dependencies:
     - pandas==1.4.4
     - pytz==2022.2.1
     - ttools==0.1.0
-prefix: /home/tomasz.turowski/mambaforge/envs/processing

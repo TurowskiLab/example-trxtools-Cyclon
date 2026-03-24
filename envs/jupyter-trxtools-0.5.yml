@@ -314,4 +314,3 @@ dependencies:
       - uri-template==1.3.0
       - webcolors==1.13
       - wrapt==2.0.0
-prefix: /home/jm/mambaforge/envs/jupyter-trxtools-0.5
