@@ -1,6 +1,7 @@
 name: jupyter-cyclon
 channels:
   - conda-forge
+  - bioconda
 dependencies:
   - _openmp_mutex=4.5=20_gnu
   - anyio=4.13.0=pyhcf101f3_0
@@ -98,6 +99,7 @@ dependencies:
   - psutil=7.2.2=py310h139afa4_0
   - ptyprocess=0.7.0=pyhd8ed1ab_1
   - pure_eval=0.2.3=pyhd8ed1ab_1
+  - pybedtools==0.12.0
   - pycparser=2.22=pyh29332c3_1
   - pygments=2.19.2=pyhd8ed1ab_0
   - pysocks=1.7.1=pyha55dd90_7
@@ -163,7 +165,6 @@ dependencies:
       - openpyxl==3.1.5
       - pandas==2.3.3
       - pillow==12.1.1
-      - pybedtools==0.12.0
       - pybigwig==0.3.25
       - pycrac==1.5.2
       - pyparsing==3.3.2
