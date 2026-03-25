@@ -64,3 +64,6 @@ jupyter lab .
 ```
 
 Afterwards open the subsequent notebooks in Jupyter and run them to perform the analysis.
+
+# Authors
+Jan Mikołajczyk, Tomasz W. Turowski
