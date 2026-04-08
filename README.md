@@ -1,5 +1,5 @@
 # Cyclon trxtools example
-Supplemental code for XXXXXX et al. 20XX. This repository provides step-by-step guidance to reproduce data in the MS and serves as a manual for using the trxtools package.
+Supplemental code for XXXXXX et al. 20XX. This repository provides step-by-step guidance to reproduce data in the MS and serves as a manual for using the [trxtools package](https://github.com/TurowskiLab/trxtools).
 The workflow is divided into two stages (cluster and desktop) according to computational demand, however it can run entirely on as single machine. 
 All steps require git and conda installed.
 
