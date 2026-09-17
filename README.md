@@ -8,7 +8,7 @@ All steps require git and conda installed.
 
 ### Clone this repository
 ```
-git clone git@github.com:TurowskiLab/example-trxtools-Cyclon.git
+git clone https://github.com/TurowskiLab/example-trxtools-Cyclon.git
 ```
 
 ### Prepare STAR index
