@@ -1,9 +1,6 @@
 import re, os, subprocess
 import pandas as pd
 
-# command used to create processing env
-# mamba create -n processing -y -c conda-forge -c bioconda deeptools pyCRAC salmon star subread fastx_toolkit samtools
-
 #paths
 path = "00_raw/"
 name_elem = '.fastq.gz'  #write file ending here
@@ -12,6 +9,7 @@ name_elem = '.fastq.gz'  #write file ending here
 # Paste your STAR index and GTF paths here
 STAR_INDEX = "/home/tomasz.turowski/seq_references/hg41/hg41_STAR_index/"
 GTF = "/home/tomasz.turowski/seq_references/hg41/hg41_annotation_gencode_tRNA_rRNA.gtf"
+COLLAPSING_DEMO_GTF = "references/collapsing_demo_ref.gtf"
 
 
 #parsing file names and preparatory jobs
@@ -48,9 +46,9 @@ d3_as = df_names['adaptor'].to_dict()
 # d4_readLen = df_names['readLength'].to_dict()
 d5_bcPattern = df_names['barcode_pattern'].to_dict()
 
-#SnakeMake pipeline
+#Snakemake pipeline
 
-########## OUTPUTS ##########
+########## TARGETTING RULES ##########
 
 rule all: 
 	input:
@@ -81,6 +79,14 @@ rule all:
 		expand("04a_BigWig_umitools/{sample}_all_umitools_CPM_fwd.bw",sample=SAMPLES),
 		expand("04a_BigWig_umitools/{sample}_all_umitools_CPM_rev.bw",sample=SAMPLES)
 
+rule collapsing_demo:
+	input:
+		expand("collapsing_demo/fastx_before_ad/04_BigWig/{sample}_all_CPM_fwd.bw",sample=SAMPLES),
+		expand("collapsing_demo/fastx_before_ad/04_BigWig/{sample}_all_CPM_rev.bw",sample=SAMPLES),
+		expand("collapsing_demo/no_collapsing/04_BigWig/{sample}_all_CPM_fwd.bw",sample=SAMPLES),
+		expand("collapsing_demo/no_collapsing/04_BigWig/{sample}_all_CPM_rev.bw",sample=SAMPLES),
+		expand("collapsing_demo/fastx_after_ad/04_BigWig/{sample}_all_CPM_fwd.bw",sample=SAMPLES),
+		expand("collapsing_demo/fastx_after_ad/04_BigWig/{sample}_all_CPM_rev.bw",sample=SAMPLES)
 
 ########## PREPROCESSING ##########
 
@@ -153,7 +159,7 @@ def adSeq(wildcards):
 	sample_name = wildcards.sample
 	return d3_as[sample_name]
 
-rule flexbar_3end_trimming:
+rule flexbar_3end_trimming: # Adaptor removal
 	input:
 		"01_preprocessing/01c_{sample}_deBC.fastq.gz"
 	params:
@@ -466,4 +472,237 @@ rule bam2sam_umitools: #optional, need to run manually
 	shell:
 		"""
 		samtools view -h {input.bam} > {output.sam}
+		"""
+
+#################################
+### RULES FOR COLLAPSING DEMO ###
+#################################
+
+## For demo: Fastx collapsing before adapter removal
+rule demo_fastx_before_ad_01_collapse:
+	input:
+		bcFile
+	output:
+		"collapsing_demo/fastx_before_ad/01_preprocessing/01a1_{sample}_fastx_A.fastq.gz"
+	conda:
+		"envs/processing.yml"
+	shell:
+		"gunzip -c {input} | fastx_collapser | gzip > {output}"
+
+rule demo_fastx_before_ad_02_debarcoding:
+	input:
+		"collapsing_demo/fastx_before_ad/01_preprocessing/01a1_{sample}_fastx_A.fastq.gz"
+	params:
+		bcLen = bcLen
+	output:
+		"collapsing_demo/fastx_before_ad/01_preprocessing/01a2_{sample}_deBC.fasta.gz"
+	conda:
+		"envs/processing.yml"
+	shell:
+		"gunzip -c {input} | fastx_trimmer -f {params.bcLen} | gzip > {output}"
+
+rule demo_fastx_before_ad_03_flexbar_3end_trimming: # Adaptor removal
+	input:
+		"collapsing_demo/fastx_before_ad/01_preprocessing/01a2_{sample}_deBC.fasta.gz"
+	params:
+		adSeq = adSeq,
+		n = "collapsing_demo/fastx_before_ad/01_preprocessing/01a3_{sample}_flexbar"
+	output:
+		"collapsing_demo/fastx_before_ad/01_preprocessing/01a3_{sample}_flexbar.fasta.gz"
+	conda:
+		"envs/flexbar.yml" 
+	shell:
+		"flexbar -r {input} -t {params.n} -as {params.adSeq} -ao 4 -u 3 -m 7 -n 4 -bt RIGHT -z GZ"
+
+rule demo_fastx_before_ad_04_align_all:
+	input:
+		reads_all = "collapsing_demo/fastx_before_ad/01_preprocessing/01a3_{sample}_flexbar.fasta.gz",
+	params:
+		index_dir = STAR_INDEX,
+		prefix_all = "collapsing_demo/fastx_before_ad/02_alignment_all/{sample}_all_STAR_"
+	output:
+		bam_all = "collapsing_demo/fastx_before_ad/02_alignment_all/{sample}_all_STAR_Aligned.out.bam"
+	resources:
+		mem_mb=32000
+	conda:
+		"envs/processing.yml"
+	shell:
+		"STAR --outFileNamePrefix {params.prefix_all} --readFilesCommand zcat --genomeDir {params.index_dir} --genomeLoad LoadAndRemove --outSAMtype BAM Unsorted --readFilesIn {input.reads_all}"
+
+rule demo_fastx_before_ad_05_sort_all:
+	input:
+		bam_all = "collapsing_demo/fastx_before_ad/02_alignment_all/{sample}_all_STAR_Aligned.out.bam"
+	output:
+		bam_all = "collapsing_demo/fastx_before_ad/02_alignment_all/{sample}_all.bam",
+		bai_all = "collapsing_demo/fastx_before_ad/02_alignment_all/{sample}_all.bam.bai"
+	conda:
+		"envs/processing.yml"
+	shell:
+		"""
+		samtools sort {input.bam_all} > {output.bam_all}
+		samtools index {output.bam_all}
+		"""
+
+rule demo_fastx_before_ad_06_BigWigs_CPM:
+	input:
+		bam = "collapsing_demo/fastx_before_ad/02_alignment_all/{sample}_all.bam",
+		bai = "collapsing_demo/fastx_before_ad/02_alignment_all/{sample}_all.bam.bai"
+	output:
+		bwP = "collapsing_demo/fastx_before_ad/04_BigWig/{sample}_all_CPM_fwd.bw",
+		bwM = "collapsing_demo/fastx_before_ad/04_BigWig/{sample}_all_CPM_rev.bw"
+	conda:
+		"envs/processing.yml"
+	shell:
+		"""
+		bamCoverage --bam {input.bam} -of bigwig -o {output.bwP} --filterRNAstrand reverse --normalizeUsing CPM --binSize 1
+		bamCoverage --bam {input.bam} -of bigwig -o {output.bwM} --filterRNAstrand forward --normalizeUsing CPM --binSize 1
+		"""
+
+## For demo: no collapsing
+rule demo_no_collapsing_01_debarcoding:
+	input:
+		bcFile
+	params:
+		bcLen = bcLen
+	output:
+		"collapsing_demo/no_collapsing/01_preprocessing/01b1_{sample}_deBC.fastq.gz"
+	conda:
+		"envs/processing.yml"
+	shell:
+		"gunzip -c {input} | fastx_trimmer -f {params.bcLen} | gzip > {output}"
+
+rule demo_no_collapsing_02_flexbar_3end_trimming: # Adaptor removal
+	input:
+		"collapsing_demo/no_collapsing/01_preprocessing/01b1_{sample}_deBC.fastq.gz"
+	params:
+		adSeq = adSeq,
+		n = "collapsing_demo/no_collapsing/01_preprocessing/01b2_{sample}_flexbar"
+	output:
+		"collapsing_demo/no_collapsing/01_preprocessing/01b2_{sample}_flexbar.fastq.gz"
+	conda:
+		"envs/flexbar.yml" 
+	shell:
+		"flexbar -r {input} -t {params.n} -as {params.adSeq} -ao 4 -u 3 -m 7 -n 4 -bt RIGHT -z GZ"
+
+rule demo_no_collapsing_03_align_all:
+	input:
+		reads_all = "collapsing_demo/no_collapsing/01_preprocessing/01b2_{sample}_flexbar.fastq.gz",
+	params:
+		index_dir = STAR_INDEX,
+		prefix_all = "collapsing_demo/no_collapsing/02_alignment_all/{sample}_all_STAR_"
+	output:
+		bam_all = "collapsing_demo/no_collapsing/02_alignment_all/{sample}_all_STAR_Aligned.out.bam"
+	resources:
+		mem_mb=32000
+	conda:
+		"envs/processing.yml"
+	shell:
+		"STAR --outFileNamePrefix {params.prefix_all} --readFilesCommand zcat --genomeDir {params.index_dir} --genomeLoad LoadAndRemove --outSAMtype BAM Unsorted --readFilesIn {input.reads_all}"
+
+rule demo_no_collapsing_04_sort_all:
+	input:
+		bam_all = "collapsing_demo/no_collapsing/02_alignment_all/{sample}_all_STAR_Aligned.out.bam"
+	output:
+		bam_all = "collapsing_demo/no_collapsing/02_alignment_all/{sample}_all.bam",
+		bai_all = "collapsing_demo/no_collapsing/02_alignment_all/{sample}_all.bam.bai"
+	conda:
+		"envs/processing.yml"
+	shell:
+		"""
+		samtools sort {input.bam_all} > {output.bam_all}
+		samtools index {output.bam_all}
+		"""
+
+rule demo_no_collapsing_05_BigWigs_CPM:
+	input:
+		bam = "collapsing_demo/no_collapsing/02_alignment_all/{sample}_all.bam",
+		bai = "collapsing_demo/no_collapsing/02_alignment_all/{sample}_all.bam.bai"
+	output:
+		bwP = "collapsing_demo/no_collapsing/04_BigWig/{sample}_all_CPM_fwd.bw",
+		bwM = "collapsing_demo/no_collapsing/04_BigWig/{sample}_all_CPM_rev.bw"
+	conda:
+		"envs/processing.yml"
+	shell:
+		"""
+		bamCoverage --bam {input.bam} -of bigwig -o {output.bwP} --filterRNAstrand reverse --normalizeUsing CPM --binSize 1
+		bamCoverage --bam {input.bam} -of bigwig -o {output.bwM} --filterRNAstrand forward --normalizeUsing CPM --binSize 1
+		"""
+
+## For demo: Fastx collapsing after adapter removal
+rule demo_fastx_after_ad_01_debarcoding:
+	input:
+		bcFile
+	params:
+		bcLen = bcLen
+	output:
+		"collapsing_demo/fastx_after_ad/01_preprocessing/01c1_{sample}_deBC.fastq.gz"
+	conda:
+		"envs/processing.yml"
+	shell:
+		"gunzip -c {input} | fastx_trimmer -f {params.bcLen} | gzip > {output}"
+
+rule demo_fastx_after_ad_02_flexbar_3end_trimming: # Adaptor removal
+	input:
+		"collapsing_demo/fastx_after_ad/01_preprocessing/01c1_{sample}_deBC.fastq.gz"
+	params:
+		adSeq = adSeq,
+		n = "collapsing_demo/fastx_after_ad/01_preprocessing/01c2_{sample}_flexbar"
+	output:
+		"collapsing_demo/fastx_after_ad/01_preprocessing/01c2_{sample}_flexbar.fastq.gz"
+	conda:
+		"envs/flexbar.yml" 
+	shell:
+		"flexbar -r {input} -t {params.n} -as {params.adSeq} -ao 4 -u 3 -m 7 -n 4 -bt RIGHT -z GZ"
+
+rule demo_fastx_after_ad_03_collapse:
+	input:
+		"collapsing_demo/fastx_after_ad/01_preprocessing/01c2_{sample}_flexbar.fastq.gz"
+	output:
+		"collapsing_demo/fastx_after_ad/01_preprocessing/01c3_{sample}_fastx_A.fastq.gz"
+	conda:
+		"envs/processing.yml"
+	shell:
+		"gunzip -c {input} | fastx_collapser | gzip > {output}"
+
+
+rule demo_fastx_after_ad_04_align_all:
+	input:
+		reads_all = "collapsing_demo/fastx_after_ad/01_preprocessing/01c3_{sample}_fastx_A.fastq.gz",
+	params:
+		index_dir = STAR_INDEX,
+		prefix_all = "collapsing_demo/fastx_after_ad/02_alignment_all/{sample}_all_STAR_"
+	output:
+		bam_all = "collapsing_demo/fastx_after_ad/02_alignment_all/{sample}_all_STAR_Aligned.out.bam"
+	conda:
+		"envs/processing.yml"
+	shell:
+		"STAR --outFileNamePrefix {params.prefix_all} --readFilesCommand zcat --genomeDir {params.index_dir} --genomeLoad LoadAndRemove --outSAMtype BAM Unsorted --readFilesIn {input.reads_all}"
+
+rule demo_fastx_after_ad_05_sort_all:
+	input:
+		bam_all = "collapsing_demo/fastx_after_ad/02_alignment_all/{sample}_all_STAR_Aligned.out.bam"
+	output:
+		bam_all = "collapsing_demo/fastx_after_ad/02_alignment_all/{sample}_all.bam",
+		bai_all = "collapsing_demo/fastx_after_ad/02_alignment_all/{sample}_all.bam.bai"
+	conda:
+		"envs/processing.yml"
+	shell:
+		"""
+		samtools sort {input.bam_all} > {output.bam_all}
+		samtools index {output.bam_all}
+		"""
+
+rule demo_fastx_after_ad_06_BigWigs_CPM:
+	input:
+		bam = "collapsing_demo/fastx_after_ad/02_alignment_all/{sample}_all.bam",
+		bai = "collapsing_demo/fastx_after_ad/02_alignment_all/{sample}_all.bam.bai"
+	output:
+		bwP = "collapsing_demo/fastx_after_ad/04_BigWig/{sample}_all_CPM_fwd.bw",
+		bwM = "collapsing_demo/fastx_after_ad/04_BigWig/{sample}_all_CPM_rev.bw"
+	conda:
+		"envs/processing.yml"
+	shell:
+		"""
+		bamCoverage --bam {input.bam} -of bigwig -o {output.bwP} --filterRNAstrand reverse --normalizeUsing CPM --binSize 1
+		bamCoverage --bam {input.bam} -of bigwig -o {output.bwM} --filterRNAstrand forward --normalizeUsing CPM --binSize 1
 		"""
